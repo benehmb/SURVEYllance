@@ -23,3 +23,9 @@ backend:
     - rename On methods Event names and delegates
     - Room: Throw error on most return -Statements?
     - Add Functionality for Joining, and general Participants
+    
+Documentation (README.md):
+    - Add settings
+    - Test "How to setup"
+    - Add Table of content
+    - Add some screenshots
