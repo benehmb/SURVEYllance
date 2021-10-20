@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SURVEYllance - New</title>
+
+    <!--Import Google Icon Font-->
+    <link href="src/MateriaIcons.css" rel="stylesheet"/>
+
+    <!--Import materialize.css-->
+    <link href="src/materialize/css/materialize.min.css" media="screen,projection" rel="stylesheet" type="text/css"/>
+
+    <!-- Import Styles and Icons-->
+    <link href="src/icons/baseline_class_black_18dp.ico" rel="shortcut icon" type="image/x-icon"/>
+    <link href="src/style/nav_bubble.css" rel="stylesheet" type="text/css">
+    <link href="src/style/new_style.css" rel="stylesheet" type="text/css">
+
+    <!-- Optimise for moblie devices -->
+    <link href="src/manifest.json" rel="manifest">
+    <meta content="yes" name="mobile-web-app-capable">
+    <meta content="yes" name="apple-mobile-web-app-capable"/>
+    <meta content="Klassenplaner" name="apple-mobile-web-app-title">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+
+    <link href="src/icons/baseline_class_black_48.png" rel="apple-touch-icon">
+    <link href="src/icons/baseline_class_black_48.png" rel="icon" sizes="72x72" type="image/png">
+    <link href="src/icons/baseline_class_black_36.png" rel="icon" sizes="54x54" type="image/png">
+    <link href="src/icons/baseline_class_black_24.png" rel="icon" sizes="36x36" type="image/png">
+    <link href="src/icons/baseline_class_black_18.png" rel="icon" sizes="27x27" type="image/png">
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+</head>
+<body>
+
+<!-- Nav Head with title-->
+<nav>
+    <div class="nav-wrapper">
+        <div class="bubble-wrapper">
+            <ul class="bg-bubbles">
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
+        </div>
+        <div class="nav-content">
+            <i class="material-icons left waves-effect waves-light" onclick="window.history.back()">arrow_back</i>
+            <a class="brand-logo center">New Survey</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Content -->
+<div>
+    <form action="index.html" id="surveyForm">
+        <h4>Question:</h4>
+        <div class="row">
+            <div class="input-field col s12">
+                <input id="question" type="text" class="validate">
+                <label for="question" class="inline">Question</label>
+                <span class="helper-text" data-error="wrong" data-success="right">The question you want to ask</span>
+            </div>
+        </div>
+        <h4>Answers:</h4>
+        <div class="row valign-wrapper answer animate">
+            <div class="input-field col s11">
+                <input id="answer1" type="text" class="validate">
+                <label for="answer1">Answer 1</label>
+            </div>
+            <i class="material-icons col s1 red-text" onclick="deleteAnswer(this)">delete_forever</i>
+        </div>
+        <div class="row valign-wrapper answer animate">
+            <div class="input-field col s11">
+                <input id="answer2" type="text" class="validate">
+                <label for="answer2">Answer 2</label>
+            </div>
+            <i class="material-icons col s1 red-text" onclick="deleteAnswer(this)">delete_forever</i>
+        </div>
+    </form>
+    <div class="row newAnswerBtn">
+        <a class="waves-effect waves-light btn" onclick="newAnswer()"><i class="material-icons">add</i></a>
+    </div>
+</div>
+<div class="submitBtn">
+    <button type="submit" class="waves-effect waves-light btn white-text"
+            onclick="document.getElementsByTagName('form')[0].submit()">
+        Create Survey
+    </button>
+</div>
+
+
+<script type="text/javascript" src="src/materialize/js/materialize.min.js"></script>
+<script type="text/javascript">
+    // Initiate duration of animation
+    const animTime = 250;
+
+    // Define max answers (TODO: export to settings)
+    const maxAnswers = 5;
+
+    // Create DOM Observer
+    var observeDOM = (function(){
+        var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+
+        return function( obj, callback ){
+            if( !obj || obj.nodeType !== 1 ) return;
+
+            if( MutationObserver ){
+                // define a new observer
+                var mutationObserver = new MutationObserver(callback)
+
+                // have the observer observe foo for changes in children
+                mutationObserver.observe( obj, { childList:true, subtree:false })
+                return mutationObserver
+            }
+
+            // browser support fallback
+            else if( window.addEventListener ){
+                obj.addEventListener('DOMNodeInserted', callback, false)
+                obj.addEventListener('DOMNodeRemoved', callback, false)
+            }
+        }
+    })();
+
+    // Get Survey-Form
+    const surveyForm = document.getElementById("surveyForm");
+
+    // Observe surveyForm DOM Element:
+    observeDOM( surveyForm, function(m){
+        m.forEach(record => {
+            if(record.addedNodes.length>0){
+                updateAnswers(false);
+            }else if(record.removedNodes.length>0){
+                updateAnswers(true);
+            }
+        });
+    });
+
+    // Get list of answers
+    let answers = surveyForm.getElementsByClassName("answer");
+
+    //TODO: Do not append it. Just return it
+    /**
+     * Create a new answer and append it  at the and
+     */
+    function newAnswer(){
+        if(answers.length >= maxAnswers){
+            M.toast({html: "You have reached the maximum amount of " + maxAnswers + " answers!"});
+            return;
+        }
+        let answerID = answers.length + 1;
+
+        //create answer
+        //<editor-fold desc="Creation of answerInput">
+        let answerInput = document.createElement('input');
+        answerInput.id = 'answer' + answerID;
+        answerInput.type = "text";
+        answerInput.classList.add('validate');
+        //</editor-fold>
+
+        //<editor-fold desc="Creation of answerLabel">
+        let answerLabel = document.createElement('label');
+        answerLabel.setAttribute('for', answerInput.id);
+        answerLabel.innerHTML = 'Answer ' + answerID;
+        //</editor-fold>
+
+        //<editor-fold desc="Creation of answerDeleteIcon">
+        let answerDeleteIcon = document.createElement('i');
+        answerDeleteIcon.classList.add('material-icons', 'col', 's1', 'red-text');
+        answerDeleteIcon.innerHTML = 'delete_forever';
+        answerDeleteIcon.setAttribute('onclick', 'deleteAnswer(this)');
+        //</editor-fold>
+
+        //<editor-fold desc="Creation of answerWrapper">
+        let answerWrapper = document.createElement('div');
+        answerWrapper.classList.add('input-field', 'col', 's11');
+        answerWrapper.appendChild(answerInput);
+        answerWrapper.appendChild(answerLabel);
+        //</editor-fold>
+
+        //<editor-fold desc="Creation of answer">
+        let answer = document.createElement("div");
+        answer.classList.add('row', 'valign-wrapper', 'answer');
+        answer.appendChild(answerWrapper);
+        answer.appendChild(answerDeleteIcon);
+        //</editor-fold>
+
+        //add answer
+        surveyForm.appendChild(answer);
+
+        //wait for animation to finish
+        setTimeout(()=> answer.classList.add("animate"));
+    }
+
+    /**
+     * Update {answers}-Object
+     * Reindex answers if necessary
+     * @param {boolean} reindex - reindex all answers
+     */
+    function updateAnswers( reindex ){
+        if (reindex) {
+            console.log("Reindexing answers");
+            for (let i = 0; i < answers.length; i++) {
+                let answer = answers.item(i);
+                let id = i + 1;
+
+                let answerLabel = answer.getElementsByTagName('label').item(0);
+                let answerInput = answer.getElementsByTagName('input').item(0);
+
+                answerInput.id = "answer" + id;
+                answerLabel.innerHTML = 'Answer ' + id;
+                answerLabel.setAttribute('for', 'answer' + id);
+            }
+        }
+        answers = surveyForm.getElementsByClassName("answer");
+    }
+
+    /**
+     * Delete given answer
+     * Displays toast if there are not enough answers
+     * @param {Node & ParentNode} answer Material-Icon of answer
+     */
+    function deleteAnswer(answer){
+        if (answers.length <= 2) {
+            M.toast({html: 'You must have at least two answers!'});
+            return;
+        }
+        answer = answer.parentNode;
+        answer.classList.remove('animate')
+        setTimeout(() => {
+            answer.remove();
+        }, animTime);
+    }
+
+</script>
+</body>
+</html>

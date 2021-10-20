@@ -1,0 +1,7 @@
+{
+  "name": "SURVEYllance",
+  "version": "1.0.0",
+  "dependencies": {
+    "@microsoft/signalr": "latest"
+  }
+}

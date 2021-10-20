@@ -1,0 +1,61 @@
+/*
+Root Elements
+ */
+:root {
+    --anim-fade-duration: 0.25s;
+}
+input:not([type]).validate+label, input[type=text]:not(.browser-default).validate+label, input[type=password]:not(.browser-default).validate+label, input[type=email]:not(.browser-default).validate+label, input[type=url]:not(.browser-default).validate+label, input[type=time]:not(.browser-default).validate+label, input[type=date]:not(.browser-default).validate+label, input[type=datetime]:not(.browser-default).validate+label, input[type=datetime-local]:not(.browser-default).validate+label, input[type=tel]:not(.browser-default).validate+label, input[type=number]:not(.browser-default).validate+label, input[type=search]:not(.browser-default).validate+label, textarea.materialize-textarea.validate+label {
+    width: auto;
+}
+/*
+Custom Classes
+ */
+.hidden {
+    display: none;
+}
+
+.card-action a {
+    cursor: pointer;
+}
+.survey .card-title i{
+    font-weight: bold;
+    padding: 0px 5px;
+}
+.survey .card-title p{
+    font-weight: bold;
+}
+
+.newSurvey i{
+    font-weight: bold;
+    padding: 0px 5px;
+}
+.card-title{
+    font-size: 20px !important;
+}
+.nav-content{
+    font-size: 24px;
+    padding: 5px;
+}
+/*
+Animations
+ */
+.fadeOut{
+    opacity: 0;
+    -webkit-transition-property: opacity; /* Safari */
+    -webkit-transition-duration: var(--anim-fade-duration); /* Safari */
+    -webkit-transition-delay: var(--anim-fade-duration); /* Safari */
+    transition-property: opacity;
+    transition-duration: var(--anim-fade-duration);
+    transition-delay: var(--anim-fade-duration);
+}
+
+.fadeIn{
+    opacity: 1;
+    -webkit-transition-property: opacity; /* Safari */
+    -webkit-transition-duration: var(--anim-fade-duration); /* Safari */
+    -webkit-transition-delay: var(--anim-fade-duration); /* Safari */
+    transition-property: opacity;
+    transition-duration: var(--anim-fade-duration);
+    transition-delay: var(--anim-fade-duration);
+}
+

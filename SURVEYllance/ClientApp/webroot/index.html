@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SURVEYllance</title>
+
+    <!--Import Google Icon Font-->
+    <link href="src/MateriaIcons.css" rel="stylesheet"/>
+
+    <!--Import materialize.css-->
+    <link href="src/materialize/css/materialize.min.css" media="screen,projection" rel="stylesheet" type="text/css"/>
+
+    <!-- Import Styles and Icons-->
+    <link href="src/icons/baseline_class_black_18dp.ico" rel="shortcut icon" type="image/x-icon"/>
+    <link href="src/style/nav_bubble.css" rel="stylesheet" type="text/css">
+    <link href="src/style/main_style.css" rel="stylesheet" type="text/css">
+
+    <!-- Optimise for moblie devices -->
+    <link href="src/manifest.json" rel="manifest">
+    <meta content="yes" name="mobile-web-app-capable">
+    <meta content="yes" name="apple-mobile-web-app-capable"/>
+    <meta content="Klassenplaner" name="apple-mobile-web-app-title">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+
+    <link href="src/icons/baseline_class_black_48.png" rel="apple-touch-icon">
+    <link href="src/icons/baseline_class_black_48.png" rel="icon" sizes="72x72" type="image/png">
+    <link href="src/icons/baseline_class_black_36.png" rel="icon" sizes="54x54" type="image/png">
+    <link href="src/icons/baseline_class_black_24.png" rel="icon" sizes="36x36" type="image/png">
+    <link href="src/icons/baseline_class_black_18.png" rel="icon" sizes="27x27" type="image/png">
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+</head>
+<body>
+<!-- Nav Head with title-->
+<nav>
+    <div class="nav-wrapper">
+        <div class="bubble-wrapper">
+            <ul class="bg-bubbles">
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
+        </div>
+        <a class="brand-logo center">Welcome to <b>SURVEY</b>llance!</a>
+    </div>
+</nav>
+
+<!-- Content -->
+<div>
+    <!-- Create survey -->
+    <!--<editor-fold desc="New Survey Example Buttons">-->
+    <div class="row">
+        <div class="card hoverable newSurvey" onclick="location.href='new.html';">
+            <div class="card-content teal-text">
+                <div class="card-title">
+                    <div class="valign-wrapper">
+                        <i class="material-icons">add</i>
+                        <p style="font-weight: bold">Create new Survey</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--
+    <div class="row">
+        <div class="card" onclick="location.href='new.html';">
+            <div class="card-content">
+                <div class="card-title">
+                    <div class="valign-wrapper">
+                        <i class="material-icons" style="font-weight: bold; padding: 0px 5px;">poll</i>
+                        <p style="font-weight: bold">Create new Survey</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <a class="btn-floating btn-large waves-effect waves-light right" style="margin: 5px;" onclick="location.href='new.html';"><i class="material-icons">add</i></a>
+    </div>
+    -->
+    <!--</editor-fold>-->
+    <!-- Divider "Recent Surveys" -->
+    <div class="row">
+        <div style="width: 100%; height: 20px; border-bottom: 1px solid black; text-align: center; border-color: gray; color: gray; margin-bottom: 20px;">
+                        <span style="font-size: 25px; background-color: white; padding: 0 10px;">
+                            Recent Surveys
+                        </span>
+        </div>
+    </div>
+    <!--List of already made surveys-->
+    <!--<editor-fold desc="Demo Surveys">-->
+    <div class="row" id="surveys">
+        <div class="row survey">
+            <div class="card hoverable">
+                <div class="card-content" onclick="toggleCard(this)">
+                    <div class="card-title" style="padding-bottom: 5px;">
+                        <div class="valign-wrapper">
+                            <i class="material-icons">help_outline</i>
+                            <p>What is love?</p>
+                        </div>
+                    </div>
+                    <div class="surveyStatsNormal">
+                        <div class="row">
+                            <div class="col s4">
+                                <p class="truncate">Baby don't hurt me</p>
+                            </div>
+                            <div class="progress col s7 offset-s1">
+                                <div class="determinate" style="width: 70%"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col s4">
+                                <p class="truncate">Don't hurt me</p>
+                            </div>
+                            <div class="progress col s7 offset-s1">
+                                <div class="determinate" style="width: 20%"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col s4">
+                                <p class="truncate">No more</p>
+                            </div>
+                            <div class="progress col s7 offset-s1">
+                                <div class="determinate" style="width: 10%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="surveyStatsExtended hidden">
+                        <div class="row">
+                            <div class="col s3">
+                                <p class="truncate">1: 70%</p>
+                            </div>
+                            <div class="progress col s9">
+                                <div class="determinate" style="width: 70%"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col s3">
+                                <p class="truncate">2: 20%</p>
+                            </div>
+                            <div class="progress col s9">
+                                <div class="determinate" style="width: 20%"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col s3">
+                                <p class="truncate">3: 10%</p>
+                            </div>
+                            <div class="progress col s9">
+                                <div class="determinate" style="width: 10%"></div>
+                            </div>
+                        </div>
+                        <p>1: Baby don't hurt me</p>
+                        <p>2: Don't hurt me</p>
+                        <p>3: No more</p>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <a href="#">Close survey</a>
+                    <a onclick="removeElement(this)">Remove survey</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="padding: 5px;">
+        <a class="waves-effect waves-light btn" style="width: 100%; cursor: pointer; font-weight: bold" onclick="createDemoSurvey()">New Demo-Survey</a>
+    </div>
+    <!--</editor-fold>-->
+    <!-- Divider "Questions" -->
+    <div class="row">
+        <div style="width: 100%; height: 20px; border-bottom: 1px solid black; text-align: center; border-color: gray; color: gray; margin-bottom: 20px;">
+                    <span style="font-size: 25px; background-color: white; padding: 0 10px;">
+                        Questions
+                    </span>
+        </div>
+    </div>
+    <!--List of upcoming questions-->
+    <!--<editor-fold desc="Demo questions">-->
+    <div class="row" id="questions">
+        <div class="row">
+            <div class="card">
+                <div class="card-content">
+                    <p>What is love?</p>
+                </div>
+                <div class="card-action">
+                    <a onclick="removeElement(this)">Done</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="padding: 5px;">
+        <a class="waves-effect waves-light btn" style="width: 100%; cursor: pointer; font-weight: bold" onclick="createDemoQuestion()">New Demo-Question</a>
+    </div>
+    <!--</editor-fold>-->
+</div>
+<script type="text/javascript" src="src/materialize/js/materialize.min.js"></script>
+<script src="lib/signalr/signalr.js"></script>
+<script type="text/javascript">
+    // Connect to Websocket
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/creator")
+        .configureLogging(signalR.LogLevel.Information)
+        .build();
+
+    async function start() {
+        try {
+            await connection.start();
+            console.log("SignalR Connected.");
+        } catch (err) {
+            console.log(err);
+            setTimeout(start, 5000);
+        }
+    };
+
+    connection.onclose(async () => {
+        await start();
+    });
+
+    // Start the connection.
+    start();
+
+
+    const animTime = 1000;
+
+    /**
+     * Answers for a Survey
+     * Each answer has
+     *  - text: possible answer to the question
+     *  - votes: how may votes has this answer
+     */
+    class SurveyAnswers {
+        text;
+        votes;
+        /**
+         * Constructor to create answers
+         * @param {String} text Name of the answer. NOT the number displayed before, which should be the Index
+         * @param {Number} votes How many votes has this answer
+         */
+        constructor(text, votes){
+            this.text = text;
+            this.votes = votes;
+        }
+    }
+
+    /**
+     * Survey-Object represents survey and it's answers.
+     * Can be parsed to a DOM-Object with {@see createSurvey}
+     * Each survey has:
+     *  - title: usually a question, to be answered
+     *  - answers: an {@see Array} of {@see SurveyAnswers}, which contains possible answers
+     *  - running: is the survey still running or closed?
+     */
+    class Survey {
+        title;
+        answers;
+        running;
+        /**
+         * Constructor to create a survey
+         * @param {String} title Title of the survey, typically a question
+         * @param {Array} surveyAnswers Array of answers. Must be of {@see surveyAnswers} Object
+         * @param {Boolean} running Is the survey still running?
+         */
+        constructor(title, surveyAnswers, running) {
+            this.title = title;
+            this.answers = surveyAnswers;
+            this.running = running;
+        }
+    }
+
+    /**
+     * Question-Object represents questions that might appear
+     * Each question has
+     *  - text: contains the question
+     */
+    class Question{
+        title;
+        /**
+         * Constructor to create a question
+         * @param title
+         */
+        constructor(title) {
+            this.title = title
+        }
+    }
+
+    /**
+     * Toggle between normalSurveyStats and ExtendedSurveyStats
+     * @param {HTMLElement} card The card which contains the information to be toggled
+     */
+    function toggleCard(card){
+        let surveyStatsNormal = card.getElementsByClassName('surveyStatsNormal')[0];
+        let surveyStatsExtended = card.getElementsByClassName('surveyStatsExtended')[0];
+        //TODO: Replace toggle with fancy animation
+        surveyStatsNormal.classList.toggle('hidden');
+        surveyStatsExtended.classList.toggle('hidden');
+        //doAnimations(surveyStatsNormal, surveyStatsExtended).then(()=>console.log("finished"));
+    }
+
+    // <editor-fold desc="Not working animation stuff">
+    async function doAnimations(objectToFadeOut, objectToFadeIn){
+        await fadeInElement(objectToFadeIn);
+        await fadeOutElement(objectToFadeOut);
+    }
+    function fadeOutElement(elem){
+        return new Promise((resolve)=>{
+            elem.addEventListener('transitionend', function() {
+                window.console.log(window.getTime() + "FadeOutComplete");
+                elem.style.display = 'none';
+                elem.classList.remove('fadeOut');
+                elem.removeEventListener('transitionend', this);
+                resolve();
+            });
+            elem.classList.add('fadeOut');
+        });
+    }
+
+    function fadeInElement(elem) {
+        return new Promise((resolve) => {
+            elem.style.display = 'inherit';
+            elem.addEventListener('transitionend', function() {
+                window.console.log(window.getTime() + "FadeInComplete");
+                elem.classList.remove('fadeIn');
+                elem.removeEventListener('transitionend', this);
+                resolve();
+            });
+            elem.classList.add('fadeIn');
+        });
+    }
+    // </editor-fold>
+
+    /**
+     * Delete given element from card action
+     * @param elem card Action delete button
+     */
+    function removeElement(elem) {
+        //TODO: Add some fancy animation
+        // get card from action
+        let card = elem.parentNode.parentNode.parentNode;
+        card.remove();
+    }
+
+    //TODO Use running
+    /**
+     * Parse a {@see Survey}-Object into a {@see HTMLElement}
+     * Example-Usage: {@code document.getElementById('survey-container').appendChild(createSurvey(<surveyObject>));}
+     * @param {Survey} survey the survey to be parsed as a DOM-Object
+     * @returns {HTMLDivElement} The element to be displayed
+     */
+    function createSurvey(survey){
+
+        //<editor-fold desc="Create card">
+        let surveyRow = document.createElement('div');
+        surveyRow.classList.add('row', 'survey');
+
+        let surveyCard = document.createElement('div');
+        surveyCard.classList.add('card', 'hoverable');
+        surveyRow.appendChild(surveyCard);
+
+        let surveyCardContent = document.createElement('div');
+        surveyCardContent.classList.add('card-content');
+        surveyCardContent.setAttribute('onclick', 'toggleCard(this)');
+        surveyCard.appendChild(surveyCardContent);
+        //</editor-fold>
+
+        //<editor-fold desc="Create card title">
+        let surveyCardTitle = document.createElement('div');
+        surveyCardTitle.classList.add('card-title');
+        surveyCardContent.appendChild(surveyCardTitle);
+
+        let surveyCardTitleWrapper = document.createElement('div');
+        surveyCardTitleWrapper.classList.add('valign-wrapper');
+        surveyCardTitle.appendChild(surveyCardTitleWrapper);
+
+        let surveyCardTitleIcon = document.createElement('i');
+        surveyCardTitleIcon.classList.add('material-icons');
+        surveyCardTitleIcon.innerHTML = 'help_outline';
+        surveyCardTitleWrapper.appendChild(surveyCardTitleIcon);
+
+        let surveyCardTitleText = document.createElement('p');
+        surveyCardTitleText.innerHTML = survey.title;
+        surveyCardTitleWrapper.appendChild(surveyCardTitleText);
+        //</editor-fold>
+
+        // calculate amount of votes
+        let totalVotes = 0;
+        survey.answers.forEach((surveyAnswer) =>{
+            totalVotes += surveyAnswer.votes;
+        });
+
+        //<editor-fold desc="Create SurveyStatsNormal element">
+        let surveyStatsNormal = document.createElement('div');
+        surveyStatsNormal.classList.add('surveyStatsNormal');
+        surveyCardContent.appendChild(surveyStatsNormal);
+
+
+        survey.answers.forEach((surveyAnswer) =>{
+            let surveyAnswerRow = document.createElement('div');
+            surveyAnswerRow.classList.add('row');
+            surveyStatsNormal.appendChild(surveyAnswerRow);
+
+            let surveyAnswerNameCol = document.createElement('div');
+            surveyAnswerNameCol.classList.add('col', 's4');
+            surveyAnswerRow.appendChild(surveyAnswerNameCol);
+
+            let surveyAnswerNameText = document.createElement('p');
+            surveyAnswerNameText.classList.add('truncate');
+            surveyAnswerNameText.innerHTML = surveyAnswer.text;
+            surveyAnswerNameCol.appendChild(surveyAnswerNameText);
+
+            let surveyAnswerProgressCol = document.createElement('div');
+            surveyAnswerProgressCol.classList.add('progress', 'col', 's7', 'offset-s1');
+            surveyAnswerRow.appendChild(surveyAnswerProgressCol);
+
+            let surveyAnswerProgress = document.createElement('div');
+            surveyAnswerProgress.classList.add('determinate');
+            // calculate percentage
+            surveyAnswerProgress.style.width = (( surveyAnswer.votes / totalVotes)*100).toFixed(0) + '%';
+            surveyAnswerProgressCol.appendChild(surveyAnswerProgress);
+        });
+        //</editor-fold>
+
+        //<editor-fold desc="Create SurveyStatsExtended element">
+        let surveyStatsExtended = document.createElement('div');
+        surveyStatsExtended.classList.add('surveyStatsExtended', 'hidden');
+        surveyCardContent.appendChild(surveyStatsExtended);
+
+        let surveyExtendedAnswers = document.createElement('div');
+        surveyExtendedAnswers.classList.add('row');
+
+
+        survey.answers.forEach((surveyAnswer, index) =>{
+            let surveyAnswerRow = document.createElement('div');
+            surveyAnswerRow.classList.add('row');
+            surveyStatsExtended.appendChild(surveyAnswerRow);
+
+            let surveyAnswerNameCol = document.createElement('div');
+            surveyAnswerNameCol.classList.add('col', 's3');
+            surveyAnswerRow.appendChild(surveyAnswerNameCol);
+
+            let surveyAnswerNameReference = document.createElement('p');
+            surveyAnswerNameReference.classList.add('truncate');
+            surveyAnswerNameReference.innerHTML = (index + 1) + ': ' + (( surveyAnswer.votes / totalVotes)*100).toFixed(0) + '%';
+            surveyAnswerNameCol.appendChild(surveyAnswerNameReference);
+
+            let surveyAnswerProgressCol = document.createElement('div');
+            surveyAnswerProgressCol.classList.add('progress', 'col', 's9');
+            surveyAnswerRow.appendChild(surveyAnswerProgressCol);
+
+            let surveyAnswerProgress = document.createElement('div');
+            surveyAnswerProgress.classList.add('determinate');
+            // calculate percentage
+            surveyAnswerProgress.style.width = (( surveyAnswer.votes / totalVotes)*100).toFixed(0) + '%';
+            surveyAnswerProgressCol.appendChild(surveyAnswerProgress);
+
+            let surveyExtendedAnswerText = document.createElement('p');
+            surveyExtendedAnswerText.innerHTML = (index+1) + ': ' + surveyAnswer.text;
+
+            surveyExtendedAnswers.appendChild(surveyExtendedAnswerText);
+        });
+        surveyStatsExtended.appendChild(surveyExtendedAnswers);
+        //</editor-fold>
+
+
+        //<editor-fold desc="Create CardActions">
+        let surveyActions = document.createElement('div');
+        surveyActions.classList.add('card-action');
+        surveyCard.appendChild(surveyActions);
+
+        let surveyActionClose = document.createElement('a');
+        surveyActionClose.innerHTML = 'Close survey';
+        surveyActions.appendChild(surveyActionClose);
+
+        let surveyActionRemove = document.createElement('a');
+        surveyActionRemove.setAttribute('onclick', 'removeElement(this)');
+        surveyActionRemove.innerHTML = 'Remove survey';
+        surveyActions.appendChild(surveyActionRemove);
+        //</editor-fold>
+
+        return surveyRow;
+    }
+
+    /**
+     * Parse a {@see Question}-Object into a {@see HTMLElement}
+     * @param {Question} question the question to be parsed
+     * @return {HTMLDivElement} the element to be displayed
+     */
+    function createQuestion(question){
+        let questionRow = document.createElement('div');
+        questionRow.classList.add('row');
+
+         let questionCard = document.createElement('div');
+         questionCard.classList.add('card');
+         questionRow.appendChild(questionCard);
+
+         let questionCardContent = document.createElement('div');
+         questionCardContent.classList.add('card-content');
+         questionCard.appendChild(questionCardContent);
+
+         let questionCardText = document.createElement('p');
+         questionCardText.innerHTML = question.title;
+         questionCardContent.appendChild(questionCardText);
+
+         let questionCardAction = document.createElement('div');
+         questionCardAction.classList.add('card-action');
+         questionCard.appendChild(questionCardAction);
+
+         let questionDoneAction = document.createElement('a');
+         questionDoneAction.setAttribute('onclick', 'removeElement(this)');
+         questionDoneAction.innerHTML = 'Done';
+         questionCardAction.appendChild(questionDoneAction);
+
+        return questionRow;
+    }
+
+    function createDemoSurvey(){
+        const randomNumber = () => {
+            return Math.floor(Math.random() * 100);
+        }
+        let someAnswers = [];
+        let someSurvey;
+        switch (Math.floor((Math.random() *3) +1)){
+            case 1:
+                someAnswers.push(new SurveyAnswers('... give you up', randomNumber()));
+                someAnswers.push(new SurveyAnswers('... let you down', randomNumber()));
+                someAnswers.push(new SurveyAnswers('...  run around', randomNumber()));
+
+                someSurvey = new Survey('He will never...', someAnswers);
+                break;
+            case 2:
+                someAnswers.push(new SurveyAnswers('... can\'t', randomNumber()));
+                someAnswers.push(new SurveyAnswers('... scan', randomNumber()));
+                someAnswers.push(new SurveyAnswers('...  can', randomNumber()));
+
+                someSurvey = new Survey('Yes we...', someAnswers);
+                break;
+            case 3:
+                someAnswers.push(new SurveyAnswers('... Dream', randomNumber()));
+                someAnswers.push(new SurveyAnswers('... Steam', randomNumber()));
+                someAnswers.push(new SurveyAnswers('...  Stream', randomNumber()));
+
+                someSurvey = new Survey('I have a...', someAnswers);
+                break;
+        }
+
+        document.getElementById('surveys').appendChild(createSurvey(someSurvey));
+    }
+    function createDemoQuestion(){
+        let question;
+        switch (Math.floor((Math.random() * 10) + 1)){
+            case 1:
+                question = createQuestion(new Question('Why does Donald Duck wear a towel when he comes out of the shower when he doesn’t usually wear any pants?'))
+                break;
+            case 2:
+                question = createQuestion(new Question('If corn oil is made from corn and vegetable oil is made from vegetables. What is baby oil made from?'))
+                break;
+            case 3:
+                question = createQuestion(new Question('Why is an electrical outlet called an outlet when you plug things into it? Shouldn’t it be called an inlet?'))
+                break;
+            case 4:
+                question = createQuestion(new Question('Why is an alarm clock going “off” when it actually turns on?'))
+                break;
+            case 5:
+                question = createQuestion(new Question('Why is lemon juice made with artificial flavor and dishwashing liquid made with real lemons?'))
+                break;
+            case 6:
+                question = createQuestion(new Question('Why is the man who invests all your money called a broker?'))
+                break;
+            case 7:
+                question = createQuestion(new Question('If quizzes are quizzical, what are tests?'))
+                break;
+            case 8:
+                question = createQuestion(new Question('If an ambulance is on its way to save someone, and it runs someone over, does it stop to help them?'))
+                break;
+            case 9:
+                question = createQuestion(new Question('Why is it that people say they “slept like a baby” when babies wake up like every two hours?'))
+                break;
+            case 10:
+                question = createQuestion(new Question('What do you call male ballerinas?'))
+                break;
+        }
+
+        document.getElementById('questions').appendChild(question);
+    }
+    createDemoSurvey();
+    createDemoQuestion();
+
+</script>
+</body>
+</html>

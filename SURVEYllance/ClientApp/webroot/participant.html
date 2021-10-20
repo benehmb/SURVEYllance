@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SURVEYllance</title>
+
+    <!--Import Google Icon Font-->
+    <link href="src/MateriaIcons.css" rel="stylesheet"/>
+
+    <!--Import materialize.css-->
+    <link href="src/materialize/css/materialize.min.css" media="screen,projection" rel="stylesheet" type="text/css"/>
+
+    <!-- Import Styles and Icons-->
+    <link href="src/icons/baseline_class_black_18dp.ico" rel="shortcut icon" type="image/x-icon"/>
+    <link href="src/style/nav_bubble.css" rel="stylesheet" type="text/css">
+    <link href="src/style/participant_style.css" rel="stylesheet" type="text/css">
+
+    <!-- Optimise for moblie devices -->
+    <link href="src/manifest.json" rel="manifest">
+    <meta content="yes" name="mobile-web-app-capable">
+    <meta content="yes" name="apple-mobile-web-app-capable"/>
+    <meta content="Klassenplaner" name="apple-mobile-web-app-title">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+
+    <link href="src/icons/baseline_class_black_48.png" rel="apple-touch-icon">
+    <link href="src/icons/baseline_class_black_48.png" rel="icon" sizes="72x72" type="image/png">
+    <link href="src/icons/baseline_class_black_36.png" rel="icon" sizes="54x54" type="image/png">
+    <link href="src/icons/baseline_class_black_24.png" rel="icon" sizes="36x36" type="image/png">
+    <link href="src/icons/baseline_class_black_18.png" rel="icon" sizes="27x27" type="image/png">
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+</head>
+<body>
+<!-- Nav Head with title-->
+<nav>
+    <div class="nav-wrapper">
+        <div class="bubble-wrapper">
+            <ul class="bg-bubbles">
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
+        </div>
+        <a class="brand-logo center">Welcome to <b>SURVEY</b>llance!</a>
+    </div>
+</nav>
+
+<!-- Content -->
+<div>
+
+    <!--List of already made surveys-->
+    <!--<editor-fold desc="Demo Surveys">-->
+    <div class="row" id="surveys">
+        <div class="row survey">
+            <div class="card">
+                <div class="card-content">
+                    <div class="card-title" style="padding-bottom: 5px;">
+                        <div class="valign-wrapper">
+                            <i class="material-icons">help_outline</i>
+                            <p>What is love?</p>
+                        </div>
+                    </div>
+                    <form action="#" class="row">
+                        <p>
+                            <label>
+                                <input class="with-gap" name="group1" type="radio"/>
+                                <span class="black-text">Baby don't hurt me</span>
+                            </label>
+                        </p>
+                        <p>
+                            <label>
+                                <input class="with-gap" name="group1" type="radio" />
+                                <span class="black-text">Don't hurt me</span>
+                            </label>
+                        </p>
+                        <p>
+                            <label>
+                                <input class="with-gap" name="group1" type="radio"  />
+                                <span class="black-text">No more</span>
+                            </label>
+                        </p>
+                    </form>
+                </div>
+                <div class="card-action">
+                    <a>Submit survey</a>
+                    <a onclick="removeElement(this)" class="red-text">Dismiss</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="padding: 5px;">
+        <a class="waves-effect waves-light btn" style="width: 100%; cursor: pointer; font-weight: bold" onclick="createDemoSurvey()">New Demo-Survey</a>
+    </div>
+    <!--</editor-fold>-->
+
+</div>
+<script type="text/javascript" src="src/materialize/js/materialize.min.js"></script>
+<script type="text/javascript">
+    const animTime = 1000;
+
+    /**
+     * Answers for a Survey
+     * Each answer has
+     *  - text: possible answer to the question
+     *  - votes: how may votes has this answer
+     */
+    class SurveyAnswers {
+        text;
+        votes;
+        /**
+         * Constructor to create answers !There won't be any votes until participant has voted!
+         * @param {String} text Name of the answer. NOT the number displayed before, which should be the Index
+         * @param {Number} votes How many votes has this answer !There won't be any votes until participant has voted!
+         */
+        constructor(text, votes){
+            this.text = text;
+            this.votes = votes;
+        }
+    }
+
+    /**
+     * Survey-Object represents survey and it's answers.
+     * Can be parsed to a DOM-Object with {@see createSurvey}
+     * Each survey has:
+     *  - title: usually a question, to be answered
+     *  - answers: an {@see Array} of {@see SurveyAnswers}, which contains possible answers
+     *  - running: is the survey still running or closed?
+     */
+    class Survey {
+        title;
+        answers;
+        running;
+        /**
+         * Constructor to create a survey
+         * @param {String} title Title of the survey, typically a question
+         * @param {Array} surveyAnswers Array of answers. Must be of {@see surveyAnswers} Object
+         * @param {Boolean} running Is the survey still running?
+         */
+        constructor(title, surveyAnswers, running) {
+            this.title = title;
+            this.answers = surveyAnswers;
+            this.running = running;
+        }
+    }
+
+    /**
+     * Question-Object represents questions that might appear
+     * Each question has
+     *  - text: contains the question
+     */
+    class Question{
+        title;
+        /**
+         * Constructor to create a question
+         * @param title
+         */
+        constructor(title) {
+            this.title = title
+        }
+    }
+
+    /**
+     * Delete given element from card action
+     * @param elem card Action delete button
+     */
+    function removeElement(elem) {
+        //TODO: Add some fancy animation
+        // get card from action
+        let card = elem.parentNode.parentNode.parentNode;
+        card.remove();
+    }
+
+    //TODO Use running
+    /**
+     * Parse a {@see Survey}-Object into a {@see HTMLElement}
+     * Example-Usage: {@code document.getElementById('survey-container').appendChild(createSurvey(<surveyObject>));}
+     * @param {Survey} survey the survey to be parsed as a DOM-Object
+     * @returns {HTMLDivElement} The element to be displayed
+     */
+    function createSurvey(survey){
+
+        //<editor-fold desc="Create card">
+        let surveyRow = document.createElement('div');
+        surveyRow.classList.add('row', 'survey');
+
+        let surveyCard = document.createElement('div');
+        surveyCard.classList.add('card');
+        surveyRow.appendChild(surveyCard);
+
+        let surveyCardContent = document.createElement('div');
+        surveyCardContent.classList.add('card-content');
+        surveyCard.appendChild(surveyCardContent);
+        //</editor-fold>
+
+        //<editor-fold desc="Create card title">
+        let surveyCardTitle = document.createElement('div');
+        surveyCardTitle.classList.add('card-title');
+        surveyCardContent.appendChild(surveyCardTitle);
+
+        let surveyCardTitleWrapper = document.createElement('div');
+        surveyCardTitleWrapper.classList.add('valign-wrapper');
+        surveyCardTitle.appendChild(surveyCardTitleWrapper);
+
+        let surveyCardTitleIcon = document.createElement('i');
+        surveyCardTitleIcon.classList.add('material-icons');
+        surveyCardTitleIcon.innerHTML = 'help_outline';
+        surveyCardTitleWrapper.appendChild(surveyCardTitleIcon);
+
+        let surveyCardTitleText = document.createElement('p');
+        surveyCardTitleText.innerHTML = survey.title;
+        surveyCardTitleWrapper.appendChild(surveyCardTitleText);
+        //</editor-fold>
+
+        //<editor-fold desc="Create Form element">
+        let surveyForm = document.createElement('form');
+        surveyForm.classList.add('row');
+        surveyForm.action = "#" //TODO: Add Action
+
+        surveyCardContent.appendChild(surveyForm);
+
+
+        survey.answers.forEach((surveyAnswer) =>{
+            let surveyAnswerRow = document.createElement('p');
+            surveyForm.appendChild(surveyAnswerRow);
+
+            let surveyAnswerLabel = document.createElement('label');
+            surveyAnswerRow.appendChild(surveyAnswerLabel);
+
+            let surveyAnswerInput = document.createElement('input');
+            surveyAnswerInput.classList.add('with-gap');
+            surveyAnswerInput.name = 'group';
+            surveyAnswerInput.type = 'radio';
+            surveyAnswerLabel.appendChild(surveyAnswerInput);
+
+            let surveyAnswerSpan = document.createElement('span');
+            surveyAnswerSpan.classList.add('black-text');
+            surveyAnswerSpan.innerHTML = surveyAnswer.text;
+            surveyAnswerLabel.appendChild(surveyAnswerSpan);
+        });
+        //</editor-fold>
+
+        //<editor-fold desc="Create CardActions">
+        let surveyActions = document.createElement('div');
+        surveyActions.classList.add('card-action');
+        surveyCard.appendChild(surveyActions);
+
+        let surveyActionSubmit = document.createElement('a');
+        surveyActionSubmit.innerHTML = 'Submit survey';
+        surveyActions.appendChild(surveyActionSubmit);
+
+        let surveyActionDismiss = document.createElement('a');
+        surveyActionDismiss.setAttribute('onclick', 'removeElement(this)');
+        surveyActionDismiss.classList.add('red-text');
+        surveyActionDismiss.innerHTML = 'Dismiss';
+        surveyActions.appendChild(surveyActionDismiss);
+        //</editor-fold>
+
+        return surveyRow;
+    }
+
+
+    function createDemoSurvey(){
+        const randomNumber = () => {
+            return Math.floor(Math.random() * 100);
+        }
+        let someAnswers = [];
+        let someSurvey;
+        switch (Math.floor((Math.random() *3) +1)){
+            case 1:
+                someAnswers.push(new SurveyAnswers('... give you up', randomNumber()));
+                someAnswers.push(new SurveyAnswers('... let you down', randomNumber()));
+                someAnswers.push(new SurveyAnswers('...  run around', randomNumber()));
+
+                someSurvey = new Survey('He will never...', someAnswers);
+                break;
+            case 2:
+                someAnswers.push(new SurveyAnswers('... can\'t', randomNumber()));
+                someAnswers.push(new SurveyAnswers('... scan', randomNumber()));
+                someAnswers.push(new SurveyAnswers('...  can', randomNumber()));
+
+                someSurvey = new Survey('Yes we...', someAnswers);
+                break;
+            case 3:
+                someAnswers.push(new SurveyAnswers('... Dream', randomNumber()));
+                someAnswers.push(new SurveyAnswers('... Steam', randomNumber()));
+                someAnswers.push(new SurveyAnswers('...  Stream', randomNumber()));
+
+                someSurvey = new Survey('I have a...', someAnswers);
+                break;
+        }
+
+        document.getElementById('surveys').appendChild(createSurvey(someSurvey));
+    }
+    function createDemoQuestion(){
+        let question;
+        switch (Math.floor((Math.random() * 10) + 1)){
+            case 1:
+                question = createQuestion(new Question('Why does Donald Duck wear a towel when he comes out of the shower when he doesn’t usually wear any pants?'))
+                break;
+            case 2:
+                question = createQuestion(new Question('If corn oil is made from corn and vegetable oil is made from vegetables. What is baby oil made from?'))
+                break;
+            case 3:
+                question = createQuestion(new Question('Why is an electrical outlet called an outlet when you plug things into it? Shouldn’t it be called an inlet?'))
+                break;
+            case 4:
+                question = createQuestion(new Question('Why is an alarm clock going “off” when it actually turns on?'))
+                break;
+            case 5:
+                question = createQuestion(new Question('Why is lemon juice made with artificial flavor and dishwashing liquid made with real lemons?'))
+                break;
+            case 6:
+                question = createQuestion(new Question('Why is the man who invests all your money called a broker?'))
+                break;
+            case 7:
+                question = createQuestion(new Question('If quizzes are quizzical, what are tests?'))
+                break;
+            case 8:
+                question = createQuestion(new Question('If an ambulance is on its way to save someone, and it runs someone over, does it stop to help them?'))
+                break;
+            case 9:
+                question = createQuestion(new Question('Why is it that people say they “slept like a baby” when babies wake up like every two hours?'))
+                break;
+            case 10:
+                question = createQuestion(new Question('What do you call male ballerinas?'))
+                break;
+        }
+
+        document.getElementById('questions').appendChild(question);
+    }
+    createDemoSurvey();
+    createDemoQuestion();
+
+</script>
+</body>
+</html>

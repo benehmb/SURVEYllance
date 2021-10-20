@@ -1,0 +1,25 @@
+Learn Websockets!!!!
+Add functionality
+Export Styles
+Write Backend
+Validate Vote on Backend
+Write Documentation
+Create Tutorial?
+Concept of multiple Creator?
+HTML:
+    Tooltipps for Answers ? https://www.w3schools.com/howto/howto_css_tooltip.asp https://materializecss.com/tooltips.html
+    Optimise for Desktop?
+    Add Fancy animation for extending Survey (maybe https://stackoverflow.com/questions/43011501/how-can-i-move-animate-an-element-from-left-to-right-while-i-scroll-down-with)
+    Add Fancy Remove Animation (Fold Box?)
+CSS:
+    -Anyting devided by - not camelCase
+
+Settings:
+    - max Answers
+    - Colors
+    - (logo?)
+
+backend:
+    - rename On methods Event names and delegates
+    - Room: Throw error on most return -Statements?
+    - Add Functionality for Joining, and general Participants

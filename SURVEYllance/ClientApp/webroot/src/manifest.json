@@ -1,0 +1,25 @@
+{
+  "display": "standalone",
+  "short_name": "Planer",
+  "name": "Klassenplaner",
+  "background_color": "black",
+  
+  "icons": [{
+    "src": "icons/baseline_class_black_18.png",
+    "type": "image/png",
+    "sizes": "27x27"
+  }, {
+    "src": "icons/baseline_class_black_24.png",
+    "type": "image/png",
+    "sizes": "36x36"
+  }, {
+    "src": "icons/baseline_class_black_36.png",
+    "type": "image/png",
+    "sizes": "54x54"
+  }, {
+    "src": "icons/baseline_class_black_48.png",
+    "type": "image/png",
+    "sizes": "72x72"
+  }]
+
+}
