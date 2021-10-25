@@ -1,11 +1,12 @@
-Learn Websockets!!!!
 Add functionality
-Export Styles
 Write Backend
 Validate Vote on Backend
 Write Documentation
 Create Tutorial?
 Concept of multiple Creator?
+Add ID to Survey
+Export Survey?
+
 HTML:
     Tooltipps for Answers ? https://www.w3schools.com/howto/howto_css_tooltip.asp https://materializecss.com/tooltips.html
     Optimise for Desktop?

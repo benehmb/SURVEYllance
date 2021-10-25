@@ -124,7 +124,7 @@ namespace SURVEYllance.Hubs
         #region Constructor
 
         /// <summary>
-        /// Create new room
+        /// Create the hub
         /// </summary>
         /// <param name="sessions">All running sessions</param>
         public CreatorHub(ISurveyRepository sessions)
@@ -198,7 +198,7 @@ namespace SURVEYllance.Hubs
             //Add room to sessions
             _sessions.RunningSessions.Add(room);
 #if DEBUG
-            Console.WriteLine("News Surveyllance Session with {0} as Creator and {1} as Join-ID", room.Creator, room.JoinId);
+            Console.WriteLine("New Surveyllance Session with {0} as Creator and {1} as Join-ID", room.Creator, room.JoinId);
 #endif
             
             //Add listener for new questions
@@ -224,6 +224,9 @@ namespace SURVEYllance.Hubs
                 await Clients.Group(room.JoinId).Concede(); //TODO: ?This ends Connection of Creator, but must end connection of users
                 _sessions.RunningSessions.Remove(room);
             }
+#if DEBUG
+            Console.WriteLine("Surveyllance Session ends with {0} as Creator and {1} as Join-ID", room.Creator, room.JoinId);
+#endif
 
             await base.OnDisconnectedAsync(exception);
         }

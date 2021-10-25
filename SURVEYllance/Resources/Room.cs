@@ -65,6 +65,7 @@ namespace SURVEYllance.Resources
         /// <param name="survey"></param>
         public void CloseSurvey(Survey survey)
         {
+            //TODO: Fire Event
             Survey foundSurvey = _surveys.LastOrDefault(s => s == survey);
             if (foundSurvey == null)
                 return; //TODO Maybe throw error
@@ -102,6 +103,8 @@ namespace SURVEYllance.Resources
         /// <param name="question"></param>
         public void RemoveQuestion(Question question)
         {
+            
+            //TODO: Fire Event
             _questions.Remove(question);
         }
         #endregion
@@ -149,7 +152,7 @@ namespace SURVEYllance.Resources
         public event SurveyRemove OnSurveyRemove;
         
         /// <summary>
-        /// Delegate of <see cref="Room.NewQuesiotn"/>
+        /// Delegate of <see cref="Room.OnNewQuestion"/>
         /// <param name="question">The removed survey</param>
         /// </summary>
         public delegate void NewQuestion(Question question);
