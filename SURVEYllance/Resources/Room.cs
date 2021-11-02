@@ -27,7 +27,7 @@ namespace SURVEYllance.Resources
         /// <summary>
         /// Connection-ID of Creator
         /// </summary>
-        public string Creator { get; }
+        public string Creator { get; set; }
         
         //TODO Add <see> for Participant-Class
         /// <summary>
@@ -123,6 +123,14 @@ namespace SURVEYllance.Resources
             _surveys = new List<Survey>();
             _questions = new List<Question>();
             JoinId = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+            
+            //TODO: Outsource length to Settings
+            /*int roomIdLength = 100000000;
+            int shorthash = JoinId.GetHashCode() % roomIdLength;
+            if (shorthash < 0) shorthash *= -1;
+            
+            Console.WriteLine($"Alternative RoomID: {shorthash}");*/
+            
         }
 
         #endregion

@@ -7,23 +7,35 @@ Concept of multiple Creator?
 Add ID to Survey
 Export Survey?
 
+JS:
+    - refactor all classes, to add getter and setter and rename in SurveyAnswerListenable.js
+
 HTML:
-    Tooltipps for Answers ? https://www.w3schools.com/howto/howto_css_tooltip.asp https://materializecss.com/tooltips.html
-    Optimise for Desktop?
-    Add Fancy animation for extending Survey (maybe https://stackoverflow.com/questions/43011501/how-can-i-move-animate-an-element-from-left-to-right-while-i-scroll-down-with)
-    Add Fancy Remove Animation (Fold Box?)
+    - Tooltips for Answers ? https://www.w3schools.com/howto/howto_css_tooltip.asp https://materializecss.com/tooltips.html
+    - Optimise for Desktop?
+    - Add Fancy animation for extending Survey (maybe https://stackoverflow.com/questions/43011501/how-can-i-move-animate-an-element-from-left-to-right-while-i-scroll-down-with)
+    - Add Fancy Remove Animation (Fold Box?)
+
 CSS:
-    -Anyting devided by - not camelCase
+    -Anything divided by - not camelCase
 
 Settings:
     - max Answers
     - Colors
     - (logo?)
 
+Frontend:
+    - new.html has to be included in index.html somehow, because there is no way to pass the connection to another page and we need to still listen for the events
+
 backend:
     - rename On methods Event names and delegates
     - Room: Throw error on most return -Statements?
     - Add Functionality for Joining, and general Participants
+    - Add some kind of Secret Token to CreatorHub.cs:JoinRoom/:CreateRoom
+    - Add timer for room. see CreatorHub.cs:OnDisconnectAsync
+    - Fix Problem with listeners. To test: connect to 'https://localhost:5001/', connect to 'https://localhost:5001/participant.html',
+        Open Console of participant-tab end enter 'await connection.invoke("JoinRoom", <Join-ID in Server-Terminal; ends with ==>);'
+        Enter 'await connection.invoke("AskQuestion", new Question("Hello"));'
     
 Documentation (README.md):
     - Add settings

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -94,9 +95,36 @@ namespace SURVEYllance.Hubs
         /// <exception cref="Exception">Room does not exist</exception>
         public async Task AskQuestion(Question question)
         {
-            throw new NotImplementedException();
             //Get room
             var room = GetRoom(Context.ConnectionId);
+            room.AddQuestion(question);
+        }
+
+        
+        /// <summary>
+        // Will be called when a new connection is established
+        /// </summary>
+        /// <param name="joinId"></param>
+        /// <exception cref="NullReferenceException"></exception>
+        public async Task JoinRoom(string joinId)
+        {
+            //Get room
+            var room = _sessions.RunningSessions.FirstOrDefault(s => s.JoinId == joinId);
+            if (room is null)
+                throw new NullReferenceException();
+                //TODO: Throw Frontend exception: Room does nit exist (anymore)
+            
+            //Add new participant to room
+            room.Participants.Add(Context.ConnectionId);
+#if DEBUG
+            Console.WriteLine("Participant {0} has joined {1}", Context.ConnectionId, room.JoinId);
+#endif
+            //FIXME: Listener won't work because Hub lifetime is per request
+            //Add listener for new survey
+            room.OnNewSurvey += survey => Clients.Caller.OnNewSurvey(survey);
+            
+            //Add room Groups-Object (used to disconnect other Clients)
+            await Groups.AddToGroupAsync(Context.ConnectionId, room.JoinId);
         }
         
         #endregion
@@ -146,8 +174,8 @@ namespace SURVEYllance.Hubs
         private Room GetRoom (string connectionId)
         {
             //Get room
-            var room = _sessions.RunningSessions.FirstOrDefault(s => s.Creator == connectionId);
-            
+            var room = _sessions.RunningSessions.FirstOrDefault(s => s.Participants.FirstOrDefault(s1 => s1.Equals(connectionId)) != null);
+
             //Check if room exists
             if (room == null)
             {
@@ -163,28 +191,21 @@ namespace SURVEYllance.Hubs
 
         #region Connection handling
 
-        //TODO: Add some docs (See CreatorHub.cs:OnConnectedAsync() for reference)
+
         /// <summary>
-        /// Will be called when a new connection is established
-        /// Add participant to <see cref="Room"/>
-        /// </summary>
-        public override async Task OnConnectedAsync()
-        {
-            
-#if DEBUG
-            Console.WriteLine("New participant joined with {0} as Connection-ID", Context.ConnectionId);
-#endif
-            throw new NotImplementedException();
-        }
-        
-        /// <summary>
-        /// Will be called when a creator exits his room
-        /// Close room and disconnect clients
+        /// Will be called when a participant exits his room
         /// </summary>
         /// <param name="exception">Exception</param>
         public override async Task OnDisconnectedAsync(Exception exception)
         {
-            throw new NotImplementedException();
+            //Get room
+            var room = GetRoom(Context.ConnectionId);
+            
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, room.JoinId);
+            
+            //Remove participant from room
+            room.Participants.Remove(Context.ConnectionId);
+            await base.OnDisconnectedAsync(exception);
         }
 
         #endregion

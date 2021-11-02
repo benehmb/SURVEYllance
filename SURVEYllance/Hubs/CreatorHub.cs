@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
 using SURVEYllance.Resources;
 
@@ -68,6 +69,7 @@ namespace SURVEYllance.Hubs
             Survey survey = new Survey(title, answers);
             
             //Add listener if the Number of Votes changes
+            //FIXME: Listener won't work because Hub lifetime is per request
             survey.OnVotesChange += (pSurvey, pAnswer) =>
             {
                 Clients.Caller.OnNewSurveyResults(pSurvey, pAnswer);
@@ -119,6 +121,86 @@ namespace SURVEYllance.Hubs
             await Clients.Caller.Testme("Hello");
         }
 
+
+        /// <summary>
+        /// Will be called when a new connection is established and the client wants a new <see cref="Room"/>
+        /// Create new <see cref="Room"/> and add it to group
+        /// Groups can be accessed by <see cref="Room.JoinId"/>
+        /// <code>await Clients.Group(*room*.JoinId).Concede();</code> to close all connections to this session
+        /// Adds listener for upcoming questions <see cref="ICreatorHub.OnNewQuestion"/>
+        /// </summary>
+        public async Task<string> CreateRoom()
+        {
+            
+            //TODO: Remove ConnectionId from here, since a user can reconnect and have a new id afterwards. Need some kind of token
+            //Create new room
+            Room room = new Room(Context.ConnectionId);
+            
+            //Add room to sessions
+            _sessions.RunningSessions.Add(room);
+#if DEBUG
+            Console.WriteLine("New Surveyllance Session with {0} as Creator and {1} as Join-ID", room.Creator, room.JoinId);
+#endif
+            
+            //Add listener for new questions
+            //FIXME: Listener won't work because Hub lifetime is per request
+            room.OnNewQuestion += question => Clients.Caller.OnNewQuestion(question);
+            
+            //Add room Groups-Object (used to disconnect other Clients)
+            await Groups.AddToGroupAsync(Context.ConnectionId, room.JoinId);
+
+            return room.JoinId;
+        }
+
+        /// <summary>
+        /// Will be called when a new connection is established and the client already has a <see cref="Room"/>
+        /// Adds listener for upcoming questions <see cref="ICreatorHub.OnNewQuestion"/>
+        /// </summary>
+        /// <param name="joinId">JoinId of the <see cref="Room"/></param>
+        public async Task JoinRoom(string joinId)
+        {
+            
+            //TODO: Remove ConnectionId from here, since a user can reconnect and have a new id afterwards. Need some kind of token
+            //TODO: Stop timer
+            //Get room
+            //TODO: Use GetRoom
+            var room = _sessions.RunningSessions.FirstOrDefault(s => s.JoinId == joinId);
+            if (room is null)
+                throw new NullReferenceException();
+                //TODO: Throw Frontend exception: Room does nit exist (anymore)
+                
+            //Set new creator
+            room.Creator = Context.ConnectionId;
+#if DEBUG
+            Console.WriteLine("Creator {0} has joined {1}", room.Creator, room.JoinId);
+#endif
+            
+            //Add listener for new questions
+            //FIXME: Listener won't work because Hub lifetime is per request
+            room.OnNewQuestion += question => Clients.Caller.OnNewQuestion(question);
+            
+            //Add room Groups-Object (used to disconnect other Clients)
+            await Groups.AddToGroupAsync(Context.ConnectionId, room.JoinId);
+        }
+        
+        /// <summary>
+        /// Destroy room
+        /// </summary>
+        public async Task DestroyRoom()
+        {
+            
+            //If creator leaves room, delete it
+            var room = _sessions.RunningSessions.FirstOrDefault(s => s.Creator == Context.ConnectionId);
+            if (!(room is null))
+            {
+                await Groups.RemoveFromGroupAsync(Context.ConnectionId, room.JoinId);
+                await Clients.Group(room.JoinId).Concede(); //TODO: ?This ends Connection of Creator, but must end connection of users
+                _sessions.RunningSessions.Remove(room);
+            }
+#if DEBUG
+            Console.WriteLine("Surveyllance Session ends with {0} as Creator and {1} as Join-ID", room.Creator, room.JoinId);
+#endif
+        }
         #endregion
 
         #region Constructor
@@ -184,32 +266,6 @@ namespace SURVEYllance.Hubs
         #region Connection handling
 
         /// <summary>
-        /// Will be called when a new connection is established
-        /// Create new <see cref="Room"/> and add it to group
-        /// Groups can be accessed by <see cref="Room.JoinId"/>
-        /// <code>await Clients.Group(*room*.JoinId).Concede();</code> to close all connections to this session
-        /// Adds listener for upcoming questions <see cref="ICreatorHub.OnNewQuestion"/>
-        /// </summary>
-        public override async Task OnConnectedAsync()
-        {
-            //Create new room
-            Room room = new Room(Context.ConnectionId);
-            
-            //Add room to sessions
-            _sessions.RunningSessions.Add(room);
-#if DEBUG
-            Console.WriteLine("New Surveyllance Session with {0} as Creator and {1} as Join-ID", room.Creator, room.JoinId);
-#endif
-            
-            //Add listener for new questions
-            room.OnNewQuestion += question => Clients.Caller.OnNewQuestion(question);
-            
-            //Add room Groups-Object (used to disconnect other Clients)
-            await Groups.AddToGroupAsync(Context.ConnectionId, room.JoinId);
-            await base.OnConnectedAsync();
-        }
-        
-        /// <summary>
         /// Will be called when a creator exits his room
         /// Close room and disconnect clients
         /// </summary>
@@ -218,14 +274,18 @@ namespace SURVEYllance.Hubs
         {
             //If creator leaves room, delete it
             var room = _sessions.RunningSessions.FirstOrDefault(s => s.Creator == Context.ConnectionId);
+            //TODO: Use GetRoom
             if (!(room is null))
             {
                 await Groups.RemoveFromGroupAsync(Context.ConnectionId, room.JoinId);
-                await Clients.Group(room.JoinId).Concede(); //TODO: ?This ends Connection of Creator, but must end connection of users
-                _sessions.RunningSessions.Remove(room);
+                //TODO: Start some kind of timer for room
+                //TODO: Remove listener for new questions? necessary?
+                
+                //await Clients.Group(room.JoinId).Concede(); //TODO: ?This ends Connection of Creator, but must end connection of users
+                //_sessions.RunningSessions.Remove(room);
             }
 #if DEBUG
-            Console.WriteLine("Surveyllance Session ends with {0} as Creator and {1} as Join-ID", room.Creator, room.JoinId);
+            //Console.WriteLine("Surveyllance Session ends with {0} as Creator and {1} as Join-ID", room.Creator, room.JoinId);
 #endif
 
             await base.OnDisconnectedAsync(exception);

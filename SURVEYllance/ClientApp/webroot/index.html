@@ -203,7 +203,15 @@
 </div>
 <script type="text/javascript" src="src/materialize/js/materialize.min.js"></script>
 <script src="lib/signalr/signalr.js"></script>
+<script src="src/sharedObjects/SurveyAnswer.js" type="text/javascript"></script>
+<script src="src/sharedObjects/Survey.js" type="text/javascript"></script>
+<script src="src/sharedObjects/Question.js" type="text/javascript"></script>
 <script type="text/javascript">
+    //TODO: OnLoad start connection?
+    const surveys = new Array(0);
+    let joinId;
+
+
     // Connect to Websocket
     const connection = new signalR.HubConnectionBuilder()
         .withUrl("/creator")
@@ -214,6 +222,8 @@
         try {
             await connection.start();
             console.log("SignalR Connected.");
+            joinId = await connection.invoke("CreateRoom");
+            console.log("New SURVEYllance-Session with JoinId: " + joinId);
         } catch (err) {
             console.log(err);
             setTimeout(start, 5000);
@@ -227,70 +237,19 @@
     // Start the connection.
     start();
 
+    //TODO: Do we want a retry? this wil create a new room, so we need reusable sessions or no retry
 
-    const animTime = 1000;
+    // Retry if connection loses
+    connection.onclose(async () => {
+        await start();
+    });
 
-    /**
-     * Answers for a Survey
-     * Each answer has
-     *  - text: possible answer to the question
-     *  - votes: how may votes has this answer
-     */
-    class SurveyAnswers {
-        text;
-        votes;
-        /**
-         * Constructor to create answers
-         * @param {String} text Name of the answer. NOT the number displayed before, which should be the Index
-         * @param {Number} votes How many votes has this answer
-         */
-        constructor(text, votes){
-            this.text = text;
-            this.votes = votes;
-        }
-    }
-
-    /**
-     * Survey-Object represents survey and it's answers.
-     * Can be parsed to a DOM-Object with {@see createSurvey}
-     * Each survey has:
-     *  - title: usually a question, to be answered
-     *  - answers: an {@see Array} of {@see SurveyAnswers}, which contains possible answers
-     *  - running: is the survey still running or closed?
-     */
-    class Survey {
-        title;
-        answers;
-        running;
-        /**
-         * Constructor to create a survey
-         * @param {String} title Title of the survey, typically a question
-         * @param {Array} surveyAnswers Array of answers. Must be of {@see surveyAnswers} Object
-         * @param {Boolean} running Is the survey still running?
-         */
-        constructor(title, surveyAnswers, running) {
-            this.title = title;
-            this.answers = surveyAnswers;
-            this.running = running;
-        }
-    }
-
-    /**
-     * Question-Object represents questions that might appear
-     * Each question has
-     *  - text: contains the question
-     */
-    class Question{
-        title;
-        /**
-         * Constructor to create a question
-         * @param title
-         */
-        constructor(title) {
-            this.title = title
-        }
-    }
-
+    //<editor-fold desc="API-Methods"
+    connection.on("OnNewSurveyResult", (survey, answer) => {
+        //Find Survey, maybe give each survey unique id?
+        //Update Answer
+    });
+    //</editor-fold>
     /**
      * Toggle between normalSurveyStats and ExtendedSurveyStats
      * @param {HTMLElement} card The card which contains the information to be toggled
@@ -528,23 +487,23 @@
         let someSurvey;
         switch (Math.floor((Math.random() *3) +1)){
             case 1:
-                someAnswers.push(new SurveyAnswers('... give you up', randomNumber()));
-                someAnswers.push(new SurveyAnswers('... let you down', randomNumber()));
-                someAnswers.push(new SurveyAnswers('...  run around', randomNumber()));
+                someAnswers.push(new SurveyAnswer('... give you up', randomNumber()));
+                someAnswers.push(new SurveyAnswer('... let you down', randomNumber()));
+                someAnswers.push(new SurveyAnswer('...  run around', randomNumber()));
 
                 someSurvey = new Survey('He will never...', someAnswers);
                 break;
             case 2:
-                someAnswers.push(new SurveyAnswers('... can\'t', randomNumber()));
-                someAnswers.push(new SurveyAnswers('... scan', randomNumber()));
-                someAnswers.push(new SurveyAnswers('...  can', randomNumber()));
+                someAnswers.push(new SurveyAnswer('... can\'t', randomNumber()));
+                someAnswers.push(new SurveyAnswer('... scan', randomNumber()));
+                someAnswers.push(new SurveyAnswer('...  can', randomNumber()));
 
                 someSurvey = new Survey('Yes we...', someAnswers);
                 break;
             case 3:
-                someAnswers.push(new SurveyAnswers('... Dream', randomNumber()));
-                someAnswers.push(new SurveyAnswers('... Steam', randomNumber()));
-                someAnswers.push(new SurveyAnswers('...  Stream', randomNumber()));
+                someAnswers.push(new SurveyAnswer('... Dream', randomNumber()));
+                someAnswers.push(new SurveyAnswer('... Steam', randomNumber()));
+                someAnswers.push(new SurveyAnswer('...  Stream', randomNumber()));
 
                 someSurvey = new Survey('I have a...', someAnswers);
                 break;

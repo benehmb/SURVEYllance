@@ -60,6 +60,18 @@ I have a long TODO-List here [TODO.txt](./SURVEYllance/TODO.txt), so feel free t
 
 I use [Rider](https://www.jetbrains.com/rider/) for the pack-end-project and [WebStorm](https://www.jetbrains.com/webstorm/) for the front-end-project. But sometimes i need to use [VisualStudio](https://visualstudio.microsoft.com/), since most C# instructions are made for it.
 
+Note for Rider: I added `//FIXME`-comments:
+
+1. File | Settings | Editor | TODO
+2. Under `Patterns:`, click the `+`
+3. `Edit Pattern`-Window appears
+4. Enter `\bfixme\b.*` as Pattern
+5. Optional: Change color
+
+![fixme-settings](Images\fixme-settings.png)
+
+(Also described [Here]([Are FIXME comments supported in Rider? Can only see TODO items – Rider Support | JetBrains](https://rider-support.jetbrains.com/hc/en-us/community/posts/360009890900-Are-FIXME-comments-supported-in-Rider-Can-only-see-TODO-items)))
+
 For the API between front-end and back-end, i use [ASP.NET with SignalR ](https://dotnet.microsoft.com/apps/aspnet/signalr), so if you need some Documentation, there it is: [ASP.NET Core SignalR Documentation](https://docs.microsoft.com/de-de/aspnet/core/signalr/introduction)
 
 On the front-end side, i use [Materialize](https://materializecss.com/) for the UI, and also SignalR since it's the API. It has been installed with [npm](https://www.npmjs.com/). Usually you shouldn't need it, but in case you need some more Libraries or need to update SignalR, you need to Install [NodeJS](https://nodejs.org/) along with npm. Npm installs it's modules in `<front-end project-root>/node_modules`, so if you install some, you need to add them to the `<front-end project-root>/cpLib.ps1` file and execute it. Beware of the relative paths in this file, so use the project-root as working directory.
