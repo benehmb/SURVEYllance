@@ -24,7 +24,7 @@ namespace SURVEYllance.Hubs
         /// Close the room
         /// </summary>
         /// <returns></returns>
-        Task OnRoomClose();
+        Task OnRoomDestroy();
         
         /// <summary>
         /// Update Survey if the results change

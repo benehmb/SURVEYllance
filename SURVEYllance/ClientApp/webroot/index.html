@@ -249,6 +249,12 @@
         //Find Survey, maybe give each survey unique id?
         //Update Answer
     });
+
+
+    connection.on("OnNewQuestion", (question) => {
+        let questionDOM = createQuestion(question);
+        document.getElementById('questions').appendChild(questionDOM);
+    });
     //</editor-fold>
     /**
      * Toggle between normalSurveyStats and ExtendedSurveyStats

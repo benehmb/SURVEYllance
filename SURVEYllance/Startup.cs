@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SURVEYllance.Hubs;
+using SURVEYllance.Manager;
 using SURVEYllance.Resources;
 
 namespace SURVEYllance
@@ -27,9 +28,10 @@ namespace SURVEYllance
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-
+            
             services.AddSignalR();
             services.AddSingleton<ISurveyRepository>(_surveyRepository);
+            services.AddSingleton<CreatorManager>();
             
 
             // In production, the React files will be served from this directory
