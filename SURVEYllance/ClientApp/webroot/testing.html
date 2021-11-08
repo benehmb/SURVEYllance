@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Testing</title>
+    <style type="text/css">
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-weight: 300;
+        }
+        body {
+            color: white;
+            font-weight: 300;
+        }
+        .wrapper {
+            background: #50a3a2;
+            background: linear-gradient(to bottom right, #50a3a2 0%, #53e3a6 100%);
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 400px;
+            margin-top: -200px;
+            overflow: hidden;
+        }
+        .wrapper.form-success .container h1 {
+            transform: translateY(85px);
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 80px 0;
+            height: 400px;
+            text-align: center;
+        }
+        .container h1 {
+            font-size: 40px;
+            transition-duration: 1s;
+            font-weight: 200;
+
+            padding: 20px 0;
+            position: relative;
+            z-index: 2;
+        }
+        .container input {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            outline: 0;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            background-color: rgba(255, 255, 255, 0.2);
+            width: 250px;
+            border-radius: 3px;
+            padding: 10px 15px;
+            margin: 0 auto 10px auto;
+            display: block;
+            text-align: center;
+            font-size: 18px;
+            color: white;
+            transition-duration: 0.25s;
+            font-weight: 300;
+        }
+        .container input:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+        .container input:focus {
+            background-color: white;
+            width: 300px;
+            color: #53e3a6;
+        }
+        .container button {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            outline: 0;
+            background-color: white;
+            border: 0;
+            padding: 10px 15px;
+            color: #53e3a6;
+            border-radius: 3px;
+            width: 250px;
+            cursor: pointer;
+            font-size: 18px;
+            transition-duration: 0.25s;
+            margin: 5px;
+        }
+        .container button:hover {
+            background-color: #f5f7f9;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="container">
+        <h1>Testing</h1>
+            <input type="text" id="RoomID" placeholder="RoomID">
+            <button onclick="JoinRoom();">JoinRoom</button></br>
+            <button onclick="Ask();">AskSomeStupid</button>
+    </div>
+</div>
+<script src="lib/signalr/signalr.js"></script>
+<script src="src/sharedObjects/Question.js" type="text/javascript"></script>
+<script type="text/javascript">
+    // Connect to Websocket
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/participant")
+        .configureLogging(signalR.LogLevel.Information)
+        .build();
+
+    async function start() {
+        try {
+            await connection.start();
+            console.log("SignalR Connected.");
+        } catch (err) {
+            console.log(err);
+            setTimeout(start, 5000);
+        }
+    };
+
+    connection.onclose(async () => {
+        await start();
+    });
+
+    // Start the connection.
+    start();
+
+    function JoinRoom() {
+        var roomID = document.getElementById("RoomID").value;
+        connection.invoke("JoinRoom", roomID).catch(err => console.error(err.toString()));
+        console.log("JoinRoom");
+    }
+    function Ask() {
+        connection.invoke("AskQuestion", createDemoQuestion()).catch(err => console.error(err.toString()));
+        console.log("AskSomeStupid");
+    }
+
+    function createDemoQuestion(){
+        let question;
+        switch (Math.floor((Math.random() * 10) + 1)){
+            case 1:
+                question = new Question('Why does Donald Duck wear a towel when he comes out of the shower when he doesn’t usually wear any pants?')
+                break;
+            case 2:
+                question = new Question('If corn oil is made from corn and vegetable oil is made from vegetables. What is baby oil made from?')
+                break;
+            case 3:
+                question = new Question('Why is an electrical outlet called an outlet when you plug things into it? Shouldn’t it be called an inlet?')
+                break;
+            case 4:
+                question = new Question('Why is an alarm clock going “off” when it actually turns on?')
+                break;
+            case 5:
+                question = new Question('Why is lemon juice made with artificial flavor and dishwashing liquid made with real lemons?')
+                break;
+            case 6:
+                question = new Question('Why is the man who invests all your money called a broker?')
+                break;
+            case 7:
+                question = new Question('If quizzes are quizzical, what are tests?')
+                break;
+            case 8:
+                question = new Question('If an ambulance is on its way to save someone, and it runs someone over, does it stop to help them?')
+                break;
+            case 9:
+                question = new Question('Why is it that people say they “slept like a baby” when babies wake up like every two hours?')
+                break;
+            case 10:
+                question = new Question('What do you call male ballerinas?')
+                break;
+        }
+
+        return question;
+    }
+</script>
+</body>
+</html>
