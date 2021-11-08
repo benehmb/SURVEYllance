@@ -5,26 +5,23 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
+using SURVEYllance.Manager;
 using SURVEYllance.Resources;
 
 namespace SURVEYllance.Hubs
 {
     public interface IParticipantHub
     {
-        //API-Methods
+        #region API-Methods Client-Side
+
+        #region Survey
 
         /// <summary>
-        /// Use to display errors on the Client-Side
+        /// Send new survey to the client
         /// </summary>
-        /// <param name="error">String to display</param>
+        /// <param name="survey">The survey to send</param>
         /// <returns></returns>
-        Task ThrowError(string error);
-        
-        /// <summary>
-        /// Close the room
-        /// </summary>
-        /// <returns></returns>
-        Task OnRoomDestroy();
+        Task OnNewSurvey(Survey survey);
         
         /// <summary>
         /// Update Survey if the results change
@@ -35,11 +32,12 @@ namespace SURVEYllance.Hubs
         Task OnNewSurveyResults(Survey survey, SurveyAnswer answer);
         
         /// <summary>
-        /// Send new survey to the client
+        /// Update Survey if the results change
         /// </summary>
-        /// <param name="survey">The survey to send</param>
+        /// <param name="id">id of the survey to update</param>
+        /// <param name="answer">The answer that has been changed</param>
         /// <returns></returns>
-        Task OnNewSurvey(Survey survey);
+        Task OnNewSurveyResults(string id, SurveyAnswer answer);
         
         /// <summary>
         /// Close the survey on the Client-Side
@@ -49,84 +47,135 @@ namespace SURVEYllance.Hubs
         Task OnSurveyClose(Survey survey);
         
         /// <summary>
+        /// Close the survey on the Client-Side
+        /// </summary>
+        /// <param name="id">id of the survey to update</param>
+        /// <returns></returns>
+        Task OnSurveyClose(string id);
+        
+        /// <summary>
         /// Remove the survey on the Client-Side
         /// </summary>
         /// <param name="survey">The survey to remove</param>
         /// <returns></returns>
         Task OnSurveyRemove(Survey survey);
+        
+        /// <summary>
+        /// Remove the survey on the Client-Side
+        /// </summary>
+        /// <param name="id">id of the survey to remove</param>
+        /// <returns></returns>
+        Task OnSurveyRemove(string id);
+        
+        #endregion
+        
+        #region Room
+
+        /// <summary>
+        /// Notify the participant that the room has been destroyed
+        /// </summary>
+        /// <returns></returns>
+        Task OnRoomDestroy();
+
+        #endregion
+
+        #region Other
+
+        /// <summary>
+        /// End connection
+        /// </summary>
+        /// <returns></returns>
+        Task Conend();
+        
+        /// <summary>
+        /// Use to display errors on the Client-Side
+        /// </summary>
+        /// <param name="error">String to display</param>
+        /// <returns></returns>
+        Task ThrowError(string error);
+
+        #endregion
+        
+        #endregion
     }
     public class ParticipantHub : Hub<IParticipantHub>
     {
-        private readonly ISurveyRepository _sessions;
+        private readonly ParticipantManager _manager;
+
+        #region API-Methods Server-Side
         
-        #region API-Methodes
+        #region Question
 
         /// <summary>
-        /// Vote for an answer
+        /// API-Method to ask a new question
+        /// </summary>
+        /// <param name="question">Question to be asked</param>
+        public async Task AskQuestion(Question question)
+        {
+            _manager.AskQuestion(Context.ConnectionId, question);
+        }
+
+        #endregion
+
+        #region Survey
+
+        /// <summary>
+        /// API-Method to vote for an answer
         /// </summary>
         /// <param name="survey">The survey to be voted on</param>
         /// <param name="surveyAnswer">The voted answer</param>
-        /// <exception cref="NotImplementedException"></exception>
-        /// <exception cref="Exception">Room does not exist</exception>
-        public async Task Vote(Survey survey, SurveyAnswer surveyAnswer)
+        /// <returns>The survey with answers visible</returns>
+        public async Task<Survey> Vote(Survey survey, SurveyAnswer surveyAnswer)
         {
-            throw new NotImplementedException();
-            //Get room
-            var room = GetRoom(Context.ConnectionId);
+            return _manager.Vote(Context.ConnectionId, survey, surveyAnswer);
         }
         
         /// <summary>
-        /// Dismiss an survey
+        /// API-Method to vote for an answer
+        /// </summary>
+        /// <param name="surveyId">ID of the survey to be voted on</param>
+        /// <param name="answerId">ID of the voted answer</param>
+        /// <returns>The survey with answers visible</returns>
+        public async Task<Survey> Vote(string surveyId, string answerId)
+        {
+            return _manager.Vote(Context.ConnectionId, surveyId, answerId);
+        }
+        
+        /// <summary>
+        /// API-Method to dismiss an survey
         /// </summary>
         /// <param name="survey">The survey to be dismissed</param>
-        /// <exception cref="NotImplementedException"></exception>
-        /// <exception cref="Exception">Room does not exist</exception>
-        public async Task Dismiss(Survey survey)
+        /// <returns>The survey with answers visible</returns>
+        public async Task<Survey> Dismiss(Survey survey)
         {
-            throw new NotImplementedException();
-            //Get room
-            var room = GetRoom(Context.ConnectionId);
+            return _manager.Dismiss(Context.ConnectionId, survey);
         }
-
-        /// <summary>
-        /// Ask a new question
-        /// </summary>
-        /// <param name="question">Question to be asked</param>
-        /// <exception cref="Exception">Room does not exist</exception>
-        public async Task AskQuestion(Question question)
-        {
-            //Get room
-            var room = GetRoom(Context.ConnectionId);
-            room.AddQuestion(question);
-        }
-
         
         /// <summary>
-        // Will be called when a new connection is established
+        /// API-Method to dismiss an survey
         /// </summary>
-        /// <param name="joinId"></param>
-        /// <exception cref="NullReferenceException"></exception>
+        /// <param name="id">ID of the survey to be dismissed</param>
+        /// <returns>The survey with answers visible</returns>
+        public async Task<Survey> Dismiss(string id)
+        {
+            return _manager.Dismiss(Context.ConnectionId, id);
+        }
+        
+        #endregion
+
+        #region Room
+
+        /// <summary>
+        /// API-Method to join a room
+        /// </summary>
+        /// <param name="joinId">Jo</param>
         public async Task JoinRoom(string joinId)
         {
-            //Get room
-            var room = _sessions.RunningSessions.FirstOrDefault(s => s.JoinId == joinId);
-            if (room is null)
-                throw new NullReferenceException();
-                //TODO: Throw Frontend exception: Room does nit exist (anymore)
-            
-            //Add new participant to room
-            room.Participants.Add(Context.ConnectionId);
-#if DEBUG
-            Console.WriteLine("Participant {0} has joined {1}", Context.ConnectionId, room.JoinId);
-#endif
-            //FIXME: Listener won't work because Hub lifetime is per request
-            //Add listener for new survey
-            room.OnNewSurvey += survey => Clients.Caller.OnNewSurvey(survey);
-            
-            //Add room Groups-Object (used to disconnect other Clients)
-            await Groups.AddToGroupAsync(Context.ConnectionId, room.JoinId);
+            await _manager.JoinRoom(Context.ConnectionId, joinId);
         }
-        
+
+        #endregion
+
         #endregion
         
         #region Constructor
@@ -134,10 +183,10 @@ namespace SURVEYllance.Hubs
         /// <summary>
         /// Create the hub
         /// </summary>
-        /// <param name="sessions">All running sessions</param>
-        public ParticipantHub(ISurveyRepository sessions)
+        /// <param name="manager">The manager, which manages the Connection between the <see cref="Room"/> and the API (<see cref="ParticipantHub"/>)</param>
+        public ParticipantHub(ParticipantManager manager)
         {
-            _sessions = sessions;
+            _manager = manager;
         }
 
         #endregion
@@ -164,47 +213,16 @@ namespace SURVEYllance.Hubs
             throw new Exception($"{pBackendMassage}; Caused by Connection-ID: {pConnectionId}");
         }
 
-        
-        /// <summary>
-        /// Get the Room of a Session-ID
-        /// </summary>
-        /// <param name="connectionId">Connection-ID</param>
-        /// <returns>Room to Connection-ID</returns>
-        /// <exception cref="Exception">Throw Exception if there is no</exception>
-        private Room GetRoom (string connectionId)
-        {
-            //Get room
-            var room = _sessions.RunningSessions.FirstOrDefault(s => s.Participants.FirstOrDefault(s1 => s1.Equals(connectionId)) != null);
-
-            //Check if room exists
-            if (room == null)
-            {
-                ThrowError(Clients.Caller,
-                    Context.ConnectionId,
-                    "You are trying to do something in a non existing Room",
-                    "User is  trying to do something in a non existing Room");
-            }
-            return room;
-        }
-
         #endregion
 
         #region Connection handling
-
-
+        
         /// <summary>
         /// Will be called when a participant exits his room
         /// </summary>
-        /// <param name="exception">Exception</param>
         public override async Task OnDisconnectedAsync(Exception exception)
         {
-            //Get room
-            var room = GetRoom(Context.ConnectionId);
-            
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, room.JoinId);
-            
-            //Remove participant from room
-            room.Participants.Remove(Context.ConnectionId);
+            await _manager.LeaveRoom(Context.ConnectionId);
             await base.OnDisconnectedAsync(exception);
         }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
+
 namespace SURVEYllance.Resources
 {
     public class Room
@@ -62,11 +63,24 @@ namespace SURVEYllance.Resources
         /// <summary>
         /// Close a specific survey in <see cref="_surveys"/>
         /// </summary>
-        /// <param name="survey"></param>
+        /// <param name="survey">The survey to close</param>
         public void CloseSurvey(Survey survey)
         {
             //TODO: Fire Event
             Survey foundSurvey = _surveys.LastOrDefault(s => s == survey);
+            if (foundSurvey == null)
+                return; //TODO Maybe throw error
+            foundSurvey.IsClosed = true;
+        }
+        
+        /// <summary>
+        /// Close a specific survey in <see cref="_surveys"/>
+        /// </summary>
+        /// <param name="id">ID of the survey to close</param>
+        public void CloseSurvey(string id)
+        {
+            //TODO: Fire Event
+            Survey foundSurvey = _surveys.LastOrDefault(s => s.Id == id);
             if (foundSurvey == null)
                 return; //TODO Maybe throw error
             foundSurvey.IsClosed = true;
@@ -80,6 +94,17 @@ namespace SURVEYllance.Resources
         {
             _surveys.Remove(survey);
             OnSurveyRemove?.Invoke(survey);
+        }
+        
+        /// <summary>
+        /// Delete a specific survey in <see cref="_surveys"/>
+        /// </summary>
+        /// <param name="id">ID of the survey to delete</param>
+        public void RemoveSurvey(string id)
+        {
+            Survey foundSurvey = _surveys.LastOrDefault(s => s.Id == id);
+            _surveys.Remove(foundSurvey);
+            OnSurveyRemove?.Invoke(foundSurvey);
         }
 
         /// <summary>
@@ -100,12 +125,20 @@ namespace SURVEYllance.Resources
         /// <summary>
         /// Remove a specific question from <see cref="_questions"/>
         /// </summary>
-        /// <param name="question"></param>
+        /// <param name="question">The question to remove</param>
         public void RemoveQuestion(Question question)
         {
-            
-            //TODO: Fire Event
             _questions.Remove(question);
+        }
+        
+        /// <summary>
+        /// Remove a specific question from <see cref="_questions"/>
+        /// </summary>
+        /// <param name="id">ID of the question to remove</param>
+        public void RemoveQuestion(string id)
+        {
+            Question foundQuestion = _questions.LastOrDefault(q => q.Id == id);
+            _questions.Remove(foundQuestion);
         }
         #endregion
 
@@ -130,7 +163,6 @@ namespace SURVEYllance.Resources
             if (shorthash < 0) shorthash *= -1;
             
             Console.WriteLine($"Alternative RoomID: {shorthash}");*/
-            
         }
 
         #endregion
@@ -171,6 +203,6 @@ namespace SURVEYllance.Resources
         public event NewQuestion OnNewQuestion;
 
         #endregion
-
+        
     }
 }

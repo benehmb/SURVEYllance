@@ -1,4 +1,6 @@
-﻿namespace SURVEYllance.Resources
+﻿using System;
+
+namespace SURVEYllance.Resources
 {
     /// <summary>
     /// Answers for a <see cref="Survey"/>
@@ -6,6 +8,11 @@
     public class SurveyAnswer
     {
         #region Private properties
+        
+        /// <summary>
+        /// Id to identify the answer from frontend calls
+        /// </summary>
+        private readonly string _id;
 
         /// <summary>
         /// The text of the Answer. Possible answer for <see cref="Survey"/>
@@ -20,6 +27,12 @@
         #endregion
 
         #region Getter and Setter
+        
+        /// <summary>
+        /// Getter for <see cref="_id"/>
+        /// Id is generated on construction
+        /// </summary>
+        public string Id => _id;
 
         /// <summary>
         /// Setter for <see cref="_text"/>
@@ -52,6 +65,7 @@
         /// <param name="text">Text of the Answer. Possible Answer for <see cref="Survey"/></param>
         public SurveyAnswer(string text)
         {
+            _id = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
             _text = text;
         }
 

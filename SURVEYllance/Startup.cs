@@ -32,6 +32,7 @@ namespace SURVEYllance
             services.AddSignalR();
             services.AddSingleton<ISurveyRepository>(_surveyRepository);
             services.AddSingleton<CreatorManager>();
+            services.AddSingleton<ParticipantManager>();
             
 
             // In production, the React files will be served from this directory

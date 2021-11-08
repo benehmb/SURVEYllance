@@ -8,8 +8,60 @@ namespace SURVEYllance.Hubs
 {
     public interface ICreatorHub
     {
-        //API-Methods
+        #region API-Methods Client-Side
+
+        #region Question
+
+        /// <summary>
+        /// Display upcoming question
+        /// </summary>
+        /// <param name="question">The Question</param>
+        /// <returns></returns>
+        Task OnNewQuestion(Question question);
+
+        #endregion
+
+        #region Survey
+
+        /// <summary>
+        /// Update Survey if the results change
+        /// </summary>
+        /// <param name="survey">The survey to update</param>
+        /// <param name="answer">The answer that has been changed</param>
+        /// <returns></returns>
+        Task OnNewSurveyResults(Survey survey, SurveyAnswer answer);
         
+        /// <summary>
+        /// Update Survey if the results change
+        /// </summary>
+        /// <param name="id">ID of the survey to update</param>
+        /// <param name="answer">The answer that has been changed</param>
+        /// <returns></returns>
+        Task OnNewSurveyResults(string id, SurveyAnswer answer);
+        
+        /// <summary>
+        /// Send survey to creator
+        /// Used to send surveys on join
+        /// </summary>
+        /// <param name="survey"></param>
+        /// <returns></returns>
+        Task OnNewSurvey(Survey survey);
+
+        #endregion
+
+        #region Room
+
+        //TODO: Do we need this?
+        /// <summary>
+        /// Notify the creator that the room has been destroyed
+        /// </summary>
+        /// <returns></returns>
+        Task OnRoomDestroy();
+
+        #endregion
+
+        #region Other
+
         /// <summary>
         /// End connection
         /// </summary>
@@ -23,27 +75,16 @@ namespace SURVEYllance.Hubs
         /// <returns></returns>
         Task ThrowError(string error);
 
-        /// <summary>
-        /// Update Survey if the results change
-        /// </summary>
-        /// <param name="survey">The survey to update</param>
-        /// <param name="answer">The answer that has been changed</param>
-        /// <returns></returns>
-        Task OnNewSurveyResults(Survey survey, SurveyAnswer answer);
-
-        /// <summary>
-        /// Display upcoming question
-        /// </summary>
-        /// <param name="question">The Question</param>
-        /// <returns></returns>
-        Task OnNewQuestion(Question question);
+        #endregion
+        
+        #endregion
 
     }
     public class CreatorHub : Hub<ICreatorHub>
     {
         private readonly CreatorManager _manager;
 
-        #region API-Methodes
+        #region API-Methodes Server-Side
 
         #region Question
 
@@ -54,6 +95,15 @@ namespace SURVEYllance.Hubs
         public async Task RemoveQuestion(Question question)
         {
             _manager.RemoveQuestion(Context.ConnectionId, question);
+        }
+        
+        /// <summary>
+        /// API-Method to remove a question
+        /// </summary>
+        /// <param name="id">ID of the question to remove</param>
+        public async Task RemoveQuestion(string id)
+        {
+            _manager.RemoveQuestion(Context.ConnectionId, id);
         }
 
         #endregion
@@ -77,6 +127,15 @@ namespace SURVEYllance.Hubs
         {
             _manager.CloseSurvey(Context.ConnectionId, survey);
         }
+        
+        /// <summary>
+        /// API-Method to close a survey
+        /// </summary>
+        /// <param name="id">ID of the survey to close</param>
+        public async Task CloseSurvey(string id)
+        {
+            _manager.CloseSurvey(Context.ConnectionId, id);
+        }
 
         /// <summary>
         /// API-Method to remove a survey
@@ -85,6 +144,15 @@ namespace SURVEYllance.Hubs
         public async Task RemoveSurvey(Survey survey)
         {
             _manager.RemoveSurvey(Context.ConnectionId, survey);
+        }
+        
+        /// <summary>
+        /// API-Method to remove a survey
+        /// </summary>
+        /// <param name="id">ID of the survey to remove</param>
+        public async Task RemoveSurvey(string id)
+        {
+            _manager.RemoveSurvey(Context.ConnectionId, id);
         }
 
         #endregion
@@ -110,7 +178,7 @@ namespace SURVEYllance.Hubs
         /// <param name="joinId">JoinId of the <see cref="Room"/></param>
         public async Task JoinRoom(string joinId)
         {
-            await _manager.JoinRoom(joinId, Context.ConnectionId);
+            await _manager.JoinRoom(Context.ConnectionId, joinId);
         }
         
         /// <summary>
@@ -132,7 +200,7 @@ namespace SURVEYllance.Hubs
         /// Create the hub
         /// </summary>
         /// <param name="manager">The manager, which manages the Connection between the <see cref="Room"/> and the API (<see cref="CreatorHub"/>)</param>
-        public CreatorHub(ISurveyRepository sessions, CreatorManager manager)
+        public CreatorHub(CreatorManager manager)
         {
             _manager = manager;
         }

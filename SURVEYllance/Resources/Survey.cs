@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -7,6 +8,11 @@ namespace SURVEYllance.Resources
     public class Survey
     {
         #region Private properties
+        
+        /// <summary>
+        /// Id to identify the survey from frontend calls
+        /// </summary>
+        private readonly string _id;
         
         /// <summary>
         /// The title of this survey
@@ -26,6 +32,12 @@ namespace SURVEYllance.Resources
         #endregion
 
         #region Getter and Setter
+        
+        /// <summary>
+        /// Getter for <see cref="_id"/>
+        /// Id is generated on construction
+        /// </summary>
+        public string Id => _id;
 
         /// <summary>
         /// Getter of <see cref="_title"/>
@@ -57,7 +69,7 @@ namespace SURVEYllance.Resources
             {
                 if(!value) return;
                 _isClosed = value;
-                OnCloseQuestion?.Invoke();
+                OnCloseSurvey?.Invoke();
             }
         }
 
@@ -72,6 +84,7 @@ namespace SURVEYllance.Resources
         /// <param name="answers">Possible answers for this survey</param>
         public Survey(string title, List<SurveyAnswer> answers)
         {
+            _id = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
             _title = title;
             _answers = answers;
             
@@ -92,18 +105,20 @@ namespace SURVEYllance.Resources
 
         /// <summary>
         /// Vote for a specific answer
-        /// Do not count if Answer is closed
+        /// Do not count if Survey is closed
         /// </summary>
-        /// <param name="index">Index of answer</param>
-        public void VoteForAnswer(int index)
+        /// <param name="id">ID of the answer</param>
+        public void VoteForAnswer(string id)
         {
             if(_isClosed) return;
-            _answers[index].Votes++;
+            SurveyAnswer answer = _answers.FirstOrDefault(answer => answer.Id == id);
+            if (answer == null) return;
+            answer.Votes++;
         }
         
         /// <summary>
         /// Vote for a specific answer
-        /// /// Do not count if Answer is closed
+        /// /// Do not count if Survey is closed
         /// </summary>
         /// <param name="answer">The answer-object</param>
         public void VoteForAnswer(SurveyAnswer answer)
@@ -134,14 +149,14 @@ namespace SURVEYllance.Resources
         public event VotesChanged OnVotesChange;
         
         /// <summary>
-        /// Delegate of <see cref="Survey.OnCloseQuestion"/>
+        /// Delegate of <see cref="Survey.OnCloseSurvey"/>
         /// </summary>
-        public delegate void CloseQuestion();
+        public delegate void CloseSurvey();
 
         /// <summary>
-        /// Fire when the number of votes for this answer increases
+        /// Fire when the survey is closed
         /// </summary>
-        public event CloseQuestion OnCloseQuestion;
+        public event CloseSurvey OnCloseSurvey;
 
 
         #endregion
