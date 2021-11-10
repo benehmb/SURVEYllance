@@ -106,6 +106,10 @@
 <script src="lib/signalr/signalr.js"></script>
 <script src="src/sharedObjects/Question.js" type="text/javascript"></script>
 <script type="text/javascript">
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
+    document.getElementById('RoomID').value = id;
+
     // Connect to Websocket
     const connection = new signalR.HubConnectionBuilder()
         .withUrl("/participant")

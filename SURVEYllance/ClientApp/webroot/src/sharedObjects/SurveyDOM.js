@@ -1,43 +1,49 @@
 /**
  * Survey-Object with reference to {@see HTMLElement}
  */
-
 class SurveyDOM extends Survey {
-    private surveyStatsNormalDiv;
-    private surveyStatsExtendedDiv;
-    private votesSum = 0;
 
-    private domObject;
+    //TODO: More Documentation
+    //TODO: Test
+    #surveyStatsNormalDiv;
+    #surveyStatsExtendedDiv;
+    #votesSum = 0;
 
-    get DomObject () {
-        return this.domObject;
+    #domObject;
+
+    get domObject () {
+        return this.#domObject;
     }
 
-    constructor(title, surveyAnswers, running) {
+    /**
+     * Constructor to create a DOM-Bound Survey-Object
+     * @param {Survey} survey
+     */
+    constructor(survey) {
+        super(survey.id, survey.title, survey.answers, survey.isClosed);
         let surveyAnswersListenable = null;
-        surveyAnswers.forEach( (surveyAnswer, index) => {
+        survey.answers.forEach( (surveyAnswer, index) => {
             surveyAnswersListenable.push(new SurveyAnswerListenable(surveyAnswer, this.onVoteChange, index));
-            this.votesSum += surveyAnswer.votes;
+            this.#votesSum += surveyAnswer.votes;
         })
-        super(title, surveyAnswersListenable, running);
-        this.domObject = this.createSurvey(super);
+        this.#domObject = this.createSurvey(this);
     }
 
     private onVoteChange(){
         super.answers.forEach( (surveyAnswer) => {
-            this.votesSum += surveyAnswer.votes;
+            this.#votesSum += surveyAnswer.votes;
         });
-        this.surveyStatsNormalDiv.innerHTML = "";
+        this.#surveyStatsNormalDiv.innerHTML = "";
 
         let surveyNormalStatsDOM = this.createNormalStats(super.answers);
         surveyNormalStatsDOM.forEach((_surveyNormalStats) => {
-            this.surveyStatsNormalDiv.appendChild(_surveyNormalStats);
+            this.#surveyStatsNormalDiv.appendChild(_surveyNormalStats);
         });
 
-        this.surveyStatsExtendedDiv.innerHTML = "";
+        this.#surveyStatsExtendedDiv.innerHTML = "";
         let surveyStatsExtendedDOM = this.createExtendedStats(super.answers);
         surveyStatsExtendedDOM.forEach((_surveyExtendedStats) => {
-            this.surveyStatsExtendedDiv.appendChild(_surveyExtendedStats);
+            this.#surveyStatsExtendedDiv.appendChild(_surveyExtendedStats);
         })
     }
 
@@ -65,7 +71,7 @@ class SurveyDOM extends Survey {
             let surveyAnswerProgress = document.createElement('div');
             surveyAnswerProgress.classList.add('determinate');
             // calculate percentage
-            surveyAnswerProgress.style.width = (( surveyAnswer.votes / this.votesSum)*100).toFixed(0) + '%';
+            surveyAnswerProgress.style.width = (( surveyAnswer.votes / this.#votesSum)*100).toFixed(0) + '%';
             surveyAnswerProgressCol.appendChild(surveyAnswerProgress);
         });
         return surveyStatsNormal;

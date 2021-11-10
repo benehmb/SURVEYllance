@@ -1,15 +1,23 @@
 class QuestionDOM extends Question{
-    domObject;
-    questionObj;
 
-    get DomObject(){
-        return this.domObject;
+    //TODO: More documentation
+    #domObject;
+    #questionObj;
+
+    get domObject(){
+        return this.#domObject;
     }
 
+    /**
+     * Constructor
+     * @param {Question} question the question object to be displayed
+     * @constructor
+     */
     constructor(question) {
-        super(question.title);
-        this.questionObj = question;
-        this.domObject = this.createQuestionDOM(question);
+        //TODO: Backend writes variables in lowercase, but frontend writes them in uppercase.
+        super(question.id, question.title);
+        this.#questionObj = question;
+        this.#domObject = this.createQuestionDOM(question);
     }
 
     /**
@@ -48,8 +56,8 @@ class QuestionDOM extends Question{
     }
 
     closQuestion() {
-        this.domObject.remove();
-        connection.invoke("RemoveQuestion", this.questionObj);
+        this.#domObject.remove();
+        RemoveQuestion(this.#questionObj.id);
     }
 
 }
