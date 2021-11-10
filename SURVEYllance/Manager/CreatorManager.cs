@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using SURVEYllance.Hubs;
 using SURVEYllance.Resources;
+#if DEBUG
+using System.Web;
+#endif
 // ReSharper disable EventUnsubscriptionViaAnonymousDelegate
 
 namespace SURVEYllance.Manager
@@ -76,23 +79,6 @@ namespace SURVEYllance.Manager
         }
         //TODO: NewSurvey, but we create the Survey-Object (to assign a valid ID)
         
-        /// <summary>
-        /// Remove a survey
-        /// </summary>
-        /// <param name="connectionId">Connection-ID of the caller (used to determinate room)</param>
-        /// <param name="survey">The <see cref="Survey"/>-Object to remove</param>
-        /// <exception cref="Exception">Room does not exist</exception>
-        public void RemoveSurvey(string connectionId, Survey survey)
-        {
-            //TODO: Test if we can handle a Survey-Object
-            //Get room
-            var room = GetRoomByConId(connectionId);
-            
-            //TODO: Check if we can / need to remove the listener
-
-            //Remove survey from room
-            room.RemoveSurvey(survey);
-        }
         
         /// <summary>
         /// Remove a survey
@@ -113,24 +99,6 @@ namespace SURVEYllance.Manager
 
             //Remove survey from room
             room.RemoveSurvey(survey);
-        }
-
-        /// <summary>
-        /// Close a surve, so no more votes can be added
-        /// </summary>
-        /// <param name="connectionId">Connection-ID of the caller (used to determinate room)</param>
-        /// <param name="survey">The <see cref="Survey"/>-Object to close</param>
-        /// <exception cref="Exception">Room does not exist</exception>
-        public void CloseSurvey(string connectionId, Survey survey)
-        {
-            //TODO: Test if we can handle a Survey-Object
-            //Get room
-            var room = GetRoomByConId(connectionId);
-            
-            //TODO: Check if we can / need to remove the listener
-            
-            //Close survey
-            room.CloseSurvey(survey);
         }
         
         /// <summary>
@@ -168,19 +136,6 @@ namespace SURVEYllance.Manager
         {
             //Send question to creator
             _creatorHubContext.Clients.Client(connectionId).SendAsync("OnNewQuestion", question);
-        }
-
-        /// <summary>
-        /// Remove a question
-        /// </summary>
-        /// <param name="connectionId">Connection-ID of the caller (used to determinate room)</param>
-        /// <param name="question">The <see cref="Question"/>-object to remove</param>
-        public void RemoveQuestion(string connectionId, Question question)
-        {
-            //TODO: Test if we can handle a Question-Object
-            //Get room
-            var room = GetRoomByConId(connectionId);
-            room.RemoveQuestion(question);
         }
         
         /// <summary>
@@ -254,7 +209,7 @@ namespace SURVEYllance.Manager
             room.OnNewQuestion += question => _creatorHubContext.Clients.Client(connectionId).SendAsync("OnNewQuestion", question);
 
 #if DEBUG
-            Console.WriteLine("New Surveyllance Session with {0} as Creator and {1} as Join-ID", room.Creator, room.JoinId);
+            Console.WriteLine("New Surveyllance Session with {0} as Creator and {1} as Join-ID. Go to 'https://localhost:5001/test/{2}' to test it!", room.Creator, room.JoinId, HttpUtility.UrlEncode(room.JoinId));
 #endif
             
             //Add room Groups-Object (used to disconnect other Clients)
@@ -274,10 +229,12 @@ namespace SURVEYllance.Manager
         public async Task JoinRoom(string connectionId, string joinId)
         {
             //TODO: Remove connectionId from here, since a user can reconnect and have a new id afterwards. Need some kind of token
-            //TODO: Stop timer
             
             // Get the room
             var room = GetRoomByJoinId(joinId);
+            
+            //TODO: Stop timer
+            _sessions.Instance.StopTimer(room);
             
             // Set the new creator
             room.Creator = connectionId;
@@ -323,6 +280,7 @@ namespace SURVEYllance.Manager
             Console.WriteLine("Creator {0} has left {1}; Starting timer", room.Creator, room.JoinId);
 #endif
             //TODO: Start Timer
+            _sessions.Instance.StartTimer(room);
             
             // Remove creator from the group
             await _creatorHubContext.Groups.RemoveFromGroupAsync(connectionId, room.JoinId);

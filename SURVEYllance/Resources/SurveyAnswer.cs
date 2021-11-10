@@ -35,7 +35,7 @@ namespace SURVEYllance.Resources
         public string Id => _id;
 
         /// <summary>
-        /// Setter for <see cref="_text"/>
+        /// Getter for <see cref="_text"/>
         /// The Text of an answer can only be read and will be set on construction
         /// </summary>
         public string Text => _text;

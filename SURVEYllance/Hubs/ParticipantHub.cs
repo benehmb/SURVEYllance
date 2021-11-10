@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
 using SURVEYllance.Manager;
 using SURVEYllance.Resources;
 
 namespace SURVEYllance.Hubs
 {
+    //TODO: Add documentation
     public interface IParticipantHub
     {
         #region API-Methods Client-Side
@@ -26,25 +23,11 @@ namespace SURVEYllance.Hubs
         /// <summary>
         /// Update Survey if the results change
         /// </summary>
-        /// <param name="survey">The survey to update</param>
-        /// <param name="answer">The answer that has been changed</param>
-        /// <returns></returns>
-        Task OnNewSurveyResults(Survey survey, SurveyAnswer answer);
-        
-        /// <summary>
-        /// Update Survey if the results change
-        /// </summary>
         /// <param name="id">id of the survey to update</param>
         /// <param name="answer">The answer that has been changed</param>
         /// <returns></returns>
         Task OnNewSurveyResults(string id, SurveyAnswer answer);
         
-        /// <summary>
-        /// Close the survey on the Client-Side
-        /// </summary>
-        /// <param name="survey">The survey to update</param>
-        /// <returns></returns>
-        Task OnSurveyClose(Survey survey);
         
         /// <summary>
         /// Close the survey on the Client-Side
@@ -53,12 +36,6 @@ namespace SURVEYllance.Hubs
         /// <returns></returns>
         Task OnSurveyClose(string id);
         
-        /// <summary>
-        /// Remove the survey on the Client-Side
-        /// </summary>
-        /// <param name="survey">The survey to remove</param>
-        /// <returns></returns>
-        Task OnSurveyRemove(Survey survey);
         
         /// <summary>
         /// Remove the survey on the Client-Side
@@ -122,17 +99,6 @@ namespace SURVEYllance.Hubs
         /// <summary>
         /// API-Method to vote for an answer
         /// </summary>
-        /// <param name="survey">The survey to be voted on</param>
-        /// <param name="surveyAnswer">The voted answer</param>
-        /// <returns>The survey with answers visible</returns>
-        public async Task<Survey> Vote(Survey survey, SurveyAnswer surveyAnswer)
-        {
-            return _manager.Vote(Context.ConnectionId, survey, surveyAnswer);
-        }
-        
-        /// <summary>
-        /// API-Method to vote for an answer
-        /// </summary>
         /// <param name="surveyId">ID of the survey to be voted on</param>
         /// <param name="answerId">ID of the voted answer</param>
         /// <returns>The survey with answers visible</returns>
@@ -140,17 +106,7 @@ namespace SURVEYllance.Hubs
         {
             return _manager.Vote(Context.ConnectionId, surveyId, answerId);
         }
-        
-        /// <summary>
-        /// API-Method to dismiss an survey
-        /// </summary>
-        /// <param name="survey">The survey to be dismissed</param>
-        /// <returns>The survey with answers visible</returns>
-        public async Task<Survey> Dismiss(Survey survey)
-        {
-            return _manager.Dismiss(Context.ConnectionId, survey);
-        }
-        
+
         /// <summary>
         /// API-Method to dismiss an survey
         /// </summary>

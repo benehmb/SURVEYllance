@@ -13,6 +13,7 @@ using SURVEYllance.Resources;
 
 namespace SURVEYllance
 {
+    //TODO: Add documentation and comments
     public class Startup
     {
         public IConfiguration Configuration { get; }
@@ -51,6 +52,7 @@ namespace SURVEYllance
             }
 
             app.UseHttpsRedirection();
+            
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
             
@@ -93,6 +95,7 @@ namespace SURVEYllance
                         
                         
                     });
+                endpoints.Redirect("/test/{JoinId?}", "/testing.html?id={JoinId?}");
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");

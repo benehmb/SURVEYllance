@@ -6,6 +6,7 @@ using SURVEYllance.Resources;
 
 namespace SURVEYllance.Hubs
 {
+    //TODO: Add documentation
     public interface ICreatorHub
     {
         #region API-Methods Client-Side
@@ -22,14 +23,6 @@ namespace SURVEYllance.Hubs
         #endregion
 
         #region Survey
-
-        /// <summary>
-        /// Update Survey if the results change
-        /// </summary>
-        /// <param name="survey">The survey to update</param>
-        /// <param name="answer">The answer that has been changed</param>
-        /// <returns></returns>
-        Task OnNewSurveyResults(Survey survey, SurveyAnswer answer);
         
         /// <summary>
         /// Update Survey if the results change
@@ -87,15 +80,6 @@ namespace SURVEYllance.Hubs
         #region API-Methodes Server-Side
 
         #region Question
-
-        /// <summary>
-        /// API-Method to remove a question
-        /// </summary>
-        /// <param name="question">The question to remove</param>
-        public async Task RemoveQuestion(Question question)
-        {
-            _manager.RemoveQuestion(Context.ConnectionId, question);
-        }
         
         /// <summary>
         /// API-Method to remove a question
@@ -122,28 +106,10 @@ namespace SURVEYllance.Hubs
         /// <summary>
         /// API-Method to close a survey
         /// </summary>
-        /// <param name="survey">The survey to close</param>
-        public async Task CloseSurvey(Survey survey)
-        {
-            _manager.CloseSurvey(Context.ConnectionId, survey);
-        }
-        
-        /// <summary>
-        /// API-Method to close a survey
-        /// </summary>
         /// <param name="id">ID of the survey to close</param>
         public async Task CloseSurvey(string id)
         {
             _manager.CloseSurvey(Context.ConnectionId, id);
-        }
-
-        /// <summary>
-        /// API-Method to remove a survey
-        /// </summary>
-        /// <param name="survey">The survey to remove</param>
-        public async Task RemoveSurvey(Survey survey)
-        {
-            _manager.RemoveSurvey(Context.ConnectionId, survey);
         }
         
         /// <summary>

@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace SURVEYllance.Resources
 {
+    //TODO: Add documentation
     public class Survey
     {
         #region Private properties
@@ -25,7 +26,7 @@ namespace SURVEYllance.Resources
         private List<SurveyAnswer> _answers;
 
         /// <summary>
-        /// A suevey can be closed, so the results will be displayed to anyone and it is not possible to vote anymore
+        /// A survey can be closed, so the results will be displayed to anyone and it is not possible to vote anymore
         /// </summary>
         private bool _isClosed = false;
 
@@ -117,10 +118,11 @@ namespace SURVEYllance.Resources
         }
         
         /// <summary>
-        /// Vote for a specific answer
-        /// /// Do not count if Survey is closed
+        /// Vote for an specific answer
+        /// Do not count if Survey is closed
         /// </summary>
         /// <param name="answer">The answer-object</param>
+        [Obsolete("Use VoteForAnswer(string id) instead")]
         public void VoteForAnswer(SurveyAnswer answer)
         {
             if(_isClosed) return;

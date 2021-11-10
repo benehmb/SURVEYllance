@@ -8,6 +8,7 @@ using SURVEYllance.Resources;
 
 namespace SURVEYllance.Manager
 {
+    //TODO: Add documentation
     public class ParticipantManager
     {
         private readonly IHubContext<ParticipantHub> _participantHubContext;
@@ -29,32 +30,7 @@ namespace SURVEYllance.Manager
         #endregion
 
         #region Survey
-
-        /// <summary>
-        /// Vote for a answer and get Survey with result
-        /// </summary>
-        /// <param name="connectionId">Connection-ID of the caller (used to determinate room and check if already voted)</param>
-        /// <param name="survey">The <see cref="Survey"/>-Object to vote on</param>
-        /// <param name="surveyAnswer">The <see cref="SurveyAnswer"/>-Object to vote for</param>
-        /// <returns>The survey with answers visible</returns>
-        public Survey Vote(string connectionId, Survey survey, SurveyAnswer surveyAnswer)
-        {
-            // Get room
-            var room = GetRoomByConId(connectionId);
-            
-            //TODO: Check if the user is allowed to vote
-            //TODO: Check if we can handle Survey-Objects
-            //Get the survey
-            Survey roomSurvey = room.Surveys.FirstOrDefault(tSurvey => tSurvey == survey);
-            
-            //Vote for the answer
-            roomSurvey?.VoteForAnswer(surveyAnswer);
-            
-            //TODO: Add listener for new answers
-
-            return roomSurvey;
-        }
-        
+   
         /// <summary>
         /// Vote for a answer and get Survey with result
         /// </summary>
@@ -85,29 +61,6 @@ namespace SURVEYllance.Manager
         /// If a user has no opinion or don't want to give it, he can dismiss so his vote is not counted, but he gets the result
         /// </summary>
         /// <param name="connectionId">Connection-ID of the caller (used to determinate room and check if already voted)</param>
-        /// <param name="survey">The <see cref="Survey"/>-Object to vote on</param>
-        /// <returns>The survey with answers visible</returns>
-        public Survey Dismiss(string connectionId, Survey survey)
-        {
-            // Get room
-            var room = GetRoomByConId(connectionId);
-            //TODO: Check if the user is allowed to dismiss
-            //TODO: Check if we can handle Survey-Objects
-            //Get the survey
-            Survey roomSurvey = room.Surveys.FirstOrDefault(tSurvey => tSurvey == survey);
-
-            //TODO: Dismiss
-            
-            //TODO: Add listener for new answers
-
-            return roomSurvey;
-        }
-        
-        /// <summary>
-        /// Dismiss a survey and get the result
-        /// If a user has no opinion or don't want to give it, he can dismiss so his vote is not counted, but he gets the result
-        /// </summary>
-        /// <param name="connectionId">Connection-ID of the caller (used to determinate room and check if already voted)</param>
         /// <param name="id">ID of the <see cref="Survey"/>-Object to vote on</param>
         /// <returns>The survey with answers visible</returns>
         public Survey Dismiss(string connectionId, string id)
@@ -126,11 +79,6 @@ namespace SURVEYllance.Manager
             return roomSurvey;
         }
 
-
-        #endregion
-
-        #region Question
-        
         /// <summary>
         /// Send survey to the creator
         /// Set listener for survey
@@ -144,6 +92,10 @@ namespace SURVEYllance.Manager
             _participantHubContext.Clients.Client(connectionId).SendAsync("OnNewSurvey", survey);
 
         }
+
+        #endregion
+
+        #region Question
 
         /// <summary>
         /// Ask a question

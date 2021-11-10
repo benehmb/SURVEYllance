@@ -2,6 +2,8 @@
 
 namespace SURVEYllance.Resources
 {
+    //TODO: Add documentation
+    //TODO: Add regions
     public class Question
     {
         /// <summary>
