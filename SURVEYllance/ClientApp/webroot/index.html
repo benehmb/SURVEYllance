@@ -243,18 +243,20 @@
     </div>
     <!--</editor-fold>-->
 </div>
+
+<!--<editor-fold desc="Libraries">-->
 <script type="text/javascript" src="src/materialize/js/materialize.min.js"></script>
-<script src="lib/signalr/signalr.js"></script>
+<script type="text/javascript" src="lib/signalr/signalr.js"></script>
+<!--</editor-fold>-->
+<!--<editor-fold desc="sharedObjects">-->
 <script src="src/sharedObjects/SurveyAnswer.js" type="text/javascript"></script>
 <script src="src/sharedObjects/Survey.js" type="text/javascript"></script>
 <script src="src/sharedObjects/Question.js" type="text/javascript"></script>
 <script src="src/sharedObjects/QuestionDOM.js" type="text/javascript"></script>
+<!--</editor-fold>-->
 <script src="src/script/CreatorWebsocket.js"></script>
-<script src="src/script/newSurvey.js"></script>
+<script src="src/script/newSurveyPopup.js"></script>
 <script type="text/javascript">
-    //TODO: OnLoad start connection?
-    const surveys = new Array(0);
-
 
     /**
      * Toggle between normalSurveyStats and ExtendedSurveyStats

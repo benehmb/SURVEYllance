@@ -47,7 +47,7 @@ let answers = surveyForm.getElementsByClassName("answer");
 
 //TODO: Do not append it. Just return it
 /**
- * Create a new answer and append it  at the and
+ * Create a new answer and append it at the end
  */
 function newAnswer(){
     if(answers.length >= maxAnswers){
@@ -139,7 +139,7 @@ function deleteAnswer(answer){
 }
 
 window.onclick = function(event) {
-    if (event.target == document.getElementById("newDialog")) {
+    if (event.target === document.getElementById("newDialog")) {
         document.getElementById("newDialog").style.display = "none";
     }
 }
