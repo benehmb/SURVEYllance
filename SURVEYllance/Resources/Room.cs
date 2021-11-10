@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Timers;
 
 
 namespace SURVEYllance.Resources
 {
+    //TODO: Add documentation
     public class Room
     {
         
@@ -40,6 +42,12 @@ namespace SURVEYllance.Resources
         /// List of Participants
         /// </summary>
         public List<string> Participants { get; }
+        
+        
+        /// <summary>
+        /// Timer if creator left room
+        /// </summary>
+        public Timer Timer { get; set; }
         
         #endregion
 
