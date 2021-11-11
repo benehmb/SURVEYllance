@@ -251,6 +251,7 @@
 <!--<editor-fold desc="sharedObjects">-->
 <script src="src/sharedObjects/SurveyAnswer.js" type="text/javascript"></script>
 <script src="src/sharedObjects/Survey.js" type="text/javascript"></script>
+<script src="src/sharedObjects/SurveyDOM.js"></script>
 <script src="src/sharedObjects/Question.js" type="text/javascript"></script>
 <script src="src/sharedObjects/QuestionDOM.js" type="text/javascript"></script>
 <!--</editor-fold>-->
@@ -258,6 +259,7 @@
 <script src="src/script/newSurveyPopup.js"></script>
 <script type="text/javascript">
 
+    //TODO: Move to SurveyDOM.js
     /**
      * Toggle between normalSurveyStats and ExtendedSurveyStats
      * @param {HTMLElement} card The card which contains the information to be toggled
@@ -303,6 +305,7 @@
     }
     // </editor-fold>
 
+    //TODO: Move to SurveyDOM.js because is is already implemented in QuestionDOM.js
     /**
      * Delete given element from card action
      * @param elem card Action delete button
@@ -312,179 +315,6 @@
         // get card from action
         let card = elem.parentNode.parentNode.parentNode;
         card.remove();
-    }
-
-    //TODO Use running
-    /**
-     * Parse a {@see Survey}-Object into a {@see HTMLElement}
-     * Example-Usage: {@code document.getElementById('survey-container').appendChild(createSurvey(<surveyObject>));}
-     * @param {Survey} survey the survey to be parsed as a DOM-Object
-     * @returns {HTMLDivElement} The element to be displayed
-     */
-    function createSurvey(survey){
-
-        //<editor-fold desc="Create card">
-        let surveyRow = document.createElement('div');
-        surveyRow.classList.add('row', 'survey');
-
-        let surveyCard = document.createElement('div');
-        surveyCard.classList.add('card', 'hoverable');
-        surveyRow.appendChild(surveyCard);
-
-        let surveyCardContent = document.createElement('div');
-        surveyCardContent.classList.add('card-content');
-        surveyCardContent.setAttribute('onclick', 'toggleCard(this)');
-        surveyCard.appendChild(surveyCardContent);
-        //</editor-fold>
-
-        //<editor-fold desc="Create card title">
-        let surveyCardTitle = document.createElement('div');
-        surveyCardTitle.classList.add('card-title');
-        surveyCardContent.appendChild(surveyCardTitle);
-
-        let surveyCardTitleWrapper = document.createElement('div');
-        surveyCardTitleWrapper.classList.add('valign-wrapper');
-        surveyCardTitle.appendChild(surveyCardTitleWrapper);
-
-        let surveyCardTitleIcon = document.createElement('i');
-        surveyCardTitleIcon.classList.add('material-icons');
-        surveyCardTitleIcon.innerHTML = 'help_outline';
-        surveyCardTitleWrapper.appendChild(surveyCardTitleIcon);
-
-        let surveyCardTitleText = document.createElement('p');
-        surveyCardTitleText.innerHTML = survey.title;
-        surveyCardTitleWrapper.appendChild(surveyCardTitleText);
-        //</editor-fold>
-
-        // calculate amount of votes
-        let totalVotes = 0;
-        survey.answers.forEach((surveyAnswer) =>{
-            totalVotes += surveyAnswer.votes;
-        });
-
-        //<editor-fold desc="Create SurveyStatsNormal element">
-        let surveyStatsNormal = document.createElement('div');
-        surveyStatsNormal.classList.add('surveyStatsNormal');
-        surveyCardContent.appendChild(surveyStatsNormal);
-
-
-        survey.answers.forEach((surveyAnswer) =>{
-            let surveyAnswerRow = document.createElement('div');
-            surveyAnswerRow.classList.add('row');
-            surveyStatsNormal.appendChild(surveyAnswerRow);
-
-            let surveyAnswerNameCol = document.createElement('div');
-            surveyAnswerNameCol.classList.add('col', 's4');
-            surveyAnswerRow.appendChild(surveyAnswerNameCol);
-
-            let surveyAnswerNameText = document.createElement('p');
-            surveyAnswerNameText.classList.add('truncate');
-            surveyAnswerNameText.innerHTML = surveyAnswer.text;
-            surveyAnswerNameCol.appendChild(surveyAnswerNameText);
-
-            let surveyAnswerProgressCol = document.createElement('div');
-            surveyAnswerProgressCol.classList.add('progress', 'col', 's7', 'offset-s1');
-            surveyAnswerRow.appendChild(surveyAnswerProgressCol);
-
-            let surveyAnswerProgress = document.createElement('div');
-            surveyAnswerProgress.classList.add('determinate');
-            // calculate percentage
-            surveyAnswerProgress.style.width = (( surveyAnswer.votes / totalVotes)*100).toFixed(0) + '%';
-            surveyAnswerProgressCol.appendChild(surveyAnswerProgress);
-        });
-        //</editor-fold>
-
-        //<editor-fold desc="Create SurveyStatsExtended element">
-        let surveyStatsExtended = document.createElement('div');
-        surveyStatsExtended.classList.add('surveyStatsExtended', 'hidden');
-        surveyCardContent.appendChild(surveyStatsExtended);
-
-        let surveyExtendedAnswers = document.createElement('div');
-        surveyExtendedAnswers.classList.add('row');
-
-
-        survey.answers.forEach((surveyAnswer, index) =>{
-            let surveyAnswerRow = document.createElement('div');
-            surveyAnswerRow.classList.add('row');
-            surveyStatsExtended.appendChild(surveyAnswerRow);
-
-            let surveyAnswerNameCol = document.createElement('div');
-            surveyAnswerNameCol.classList.add('col', 's3');
-            surveyAnswerRow.appendChild(surveyAnswerNameCol);
-
-            let surveyAnswerNameReference = document.createElement('p');
-            surveyAnswerNameReference.classList.add('truncate');
-            surveyAnswerNameReference.innerHTML = (index + 1) + ': ' + (( surveyAnswer.votes / totalVotes)*100).toFixed(0) + '%';
-            surveyAnswerNameCol.appendChild(surveyAnswerNameReference);
-
-            let surveyAnswerProgressCol = document.createElement('div');
-            surveyAnswerProgressCol.classList.add('progress', 'col', 's9');
-            surveyAnswerRow.appendChild(surveyAnswerProgressCol);
-
-            let surveyAnswerProgress = document.createElement('div');
-            surveyAnswerProgress.classList.add('determinate');
-            // calculate percentage
-            surveyAnswerProgress.style.width = (( surveyAnswer.votes / totalVotes)*100).toFixed(0) + '%';
-            surveyAnswerProgressCol.appendChild(surveyAnswerProgress);
-
-            let surveyExtendedAnswerText = document.createElement('p');
-            surveyExtendedAnswerText.innerHTML = (index+1) + ': ' + surveyAnswer.text;
-
-            surveyExtendedAnswers.appendChild(surveyExtendedAnswerText);
-        });
-        surveyStatsExtended.appendChild(surveyExtendedAnswers);
-        //</editor-fold>
-
-
-        //<editor-fold desc="Create CardActions">
-        let surveyActions = document.createElement('div');
-        surveyActions.classList.add('card-action');
-        surveyCard.appendChild(surveyActions);
-
-        let surveyActionClose = document.createElement('a');
-        surveyActionClose.innerHTML = 'Close survey';
-        surveyActions.appendChild(surveyActionClose);
-
-        let surveyActionRemove = document.createElement('a');
-        surveyActionRemove.setAttribute('onclick', 'removeElement(this)');
-        surveyActionRemove.innerHTML = 'Remove survey';
-        surveyActions.appendChild(surveyActionRemove);
-        //</editor-fold>
-
-        return surveyRow;
-    }
-
-    /**
-     * Parse a {@see Question}-Object into a {@see HTMLElement}
-     * @param {Question} question the question to be parsed
-     * @return {HTMLDivElement} the element to be displayed
-     */
-    function createQuestion(question){
-        let questionRow = document.createElement('div');
-        questionRow.classList.add('row');
-
-         let questionCard = document.createElement('div');
-         questionCard.classList.add('card');
-         questionRow.appendChild(questionCard);
-
-         let questionCardContent = document.createElement('div');
-         questionCardContent.classList.add('card-content');
-         questionCard.appendChild(questionCardContent);
-
-         let questionCardText = document.createElement('p');
-         questionCardText.innerHTML = question.title;
-         questionCardContent.appendChild(questionCardText);
-
-         let questionCardAction = document.createElement('div');
-         questionCardAction.classList.add('card-action');
-         questionCard.appendChild(questionCardAction);
-
-         let questionDoneAction = document.createElement('a');
-         questionDoneAction.setAttribute('onclick', 'removeElement(this)');
-         questionDoneAction.innerHTML = 'Done';
-         questionCardAction.appendChild(questionDoneAction);
-
-        return questionRow;
     }
 
     function createDemoSurvey(){
@@ -516,45 +346,45 @@
                 someSurvey = new Survey("3", 'I have a...', someAnswers);
                 break;
         }
-
-        document.getElementById('surveys').appendChild(createSurvey(someSurvey));
+        let surveyDom = new SurveyDOM(someSurvey);
+        document.getElementById('surveys').appendChild(surveyDom.domObject);
     }
     function createDemoQuestion(){
         let question;
         switch (Math.floor((Math.random() * 10) + 1)){
             case 1:
-                question = createQuestion(new Question("1", 'Why does Donald Duck wear a towel when he comes out of the shower when he doesn’t usually wear any pants?'))
+                question = new Question("1", 'Why does Donald Duck wear a towel when he comes out of the shower when he doesn’t usually wear any pants?')
                 break;
             case 2:
-                question = createQuestion(new Question("2", 'If corn oil is made from corn and vegetable oil is made from vegetables. What is baby oil made from?'))
+                question = new Question("2", 'If corn oil is made from corn and vegetable oil is made from vegetables. What is baby oil made from?')
                 break;
             case 3:
-                question = createQuestion(new Question("3", 'Why is an electrical outlet called an outlet when you plug things into it? Shouldn’t it be called an inlet?'))
+                question = new Question("3", 'Why is an electrical outlet called an outlet when you plug things into it? Shouldn’t it be called an inlet?')
                 break;
             case 4:
-                question = createQuestion(new Question("4", 'Why is an alarm clock going “off” when it actually turns on?'))
+                question = new Question("4", 'Why is an alarm clock going “off” when it actually turns on?')
                 break;
             case 5:
-                question = createQuestion(new Question("5", 'Why is lemon juice made with artificial flavor and dishwashing liquid made with real lemons?'))
+                question = new Question("5", 'Why is lemon juice made with artificial flavor and dishwashing liquid made with real lemons?')
                 break;
             case 6:
-                question = createQuestion(new Question("6", 'Why is the man who invests all your money called a broker?'))
+                question = new Question("6", 'Why is the man who invests all your money called a broker?')
                 break;
             case 7:
-                question = createQuestion(new Question("7", 'If quizzes are quizzical, what are tests?'))
+                question = new Question("7", 'If quizzes are quizzical, what are tests?')
                 break;
             case 8:
-                question = createQuestion(new Question("8", 'If an ambulance is on its way to save someone, and it runs someone over, does it stop to help them?'))
+                question = new Question("8", 'If an ambulance is on its way to save someone, and it runs someone over, does it stop to help them?')
                 break;
             case 9:
-                question = createQuestion(new Question("9", 'Why is it that people say they “slept like a baby” when babies wake up like every two hours?'))
+                question = new Question("9", 'Why is it that people say they “slept like a baby” when babies wake up like every two hours?')
                 break;
             case 10:
-                question = createQuestion(new Question("10", 'What do you call male ballerinas?'))
+                question = new Question("10", 'What do you call male ballerinas?')
                 break;
         }
-
-        document.getElementById('questions').appendChild(question);
+        let questionDom = new QuestionDOM(question)
+        document.getElementById('questions').appendChild(questionDom.domObject);
     }
     createDemoSurvey();
     createDemoQuestion();

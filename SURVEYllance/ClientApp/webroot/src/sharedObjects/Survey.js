@@ -1,10 +1,9 @@
 /**
  * Survey-Object represents survey and it's answers.
- * Can be parsed to a DOM-Object with {@see createSurvey}
- *  @property {String} Id id to identify the survey from backend calls
- *  @property {String} Title title of the survey
+ *  @property {string} Id id to identify the survey from backend calls
+ *  @property {string} Title title of the survey
  *  @property {Array<SurveyAnswer>} Answers Array of {@link SurveyAnswer}
- *  @property {Boolean} IsClosed Is the survey still running or closed?
+ *  @property {boolean} IsClosed Is the survey still running or closed?
  */
 class Survey {
 
@@ -82,7 +81,7 @@ class Survey {
 
     /**
      * Setter of {@link #isClosed}
-     * @param {boolean} value
+     * @param {boolean} value set survey closed
      */
     set isClosed(value) {
         if(!value)
@@ -97,10 +96,10 @@ class Survey {
 
     /**
      * Constructor to create a survey
-     * @param {String} id - the id of the survey
-     * @param {String} title title of the survey, typically a question
+     * @param {string} id - the id of the survey
+     * @param {string} title title of the survey, typically a question
      * @param {Array<SurveyAnswer>} surveyAnswers Array of answers. Must be of {@see surveyAnswers} Object
-     * @param {Boolean} isClosed Is the survey still running?
+     * @param {boolean} isClosed Is the survey still running?
      * @constructor
      */
     constructor(id, title, surveyAnswers, isClosed) {
@@ -122,10 +121,9 @@ class Survey {
     VoteForAnswer(answerId){
         if(this.#isClosed)
             return;
-        this.#answers.forEach(answer => {
-            if(answer.id === answerId)
-                answer.votes++;
-        });
+        //Vote for answer
+        let answer = this.#answers.find(answer => answer.id === answerId);
+        answer.votes++;
     }
 
     //</editor-fold>

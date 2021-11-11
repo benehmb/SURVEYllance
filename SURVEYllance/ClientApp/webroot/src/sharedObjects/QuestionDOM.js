@@ -2,7 +2,6 @@ class QuestionDOM extends Question{
 
     //TODO: More documentation
     #domObject;
-    #questionObj;
 
     get domObject(){
         return this.#domObject;
@@ -16,7 +15,6 @@ class QuestionDOM extends Question{
     constructor(question) {
         //TODO: Backend writes variables in lowercase, but frontend writes them in uppercase.
         super(question.id, question.title);
-        this.#questionObj = question;
         this.#domObject = this.createQuestionDOM(question);
     }
 
@@ -57,7 +55,7 @@ class QuestionDOM extends Question{
 
     closQuestion() {
         this.#domObject.remove();
-        RemoveQuestion(this.#questionObj.id);
+        RemoveQuestion(this.id);
     }
 
 }

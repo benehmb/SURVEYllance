@@ -76,8 +76,8 @@ class SurveyAnswer {
     /**
      * Constructor to create answers
      * @param {string} id id to identify the answer from backend calls
-     * @param {String} text Name of the answer. NOT the number displayed before, which should be the Index
-     * @param {Number} votes How many votes has this answer
+     * @param {string} text Name of the answer. NOT the number displayed before, which should be the Index
+     * @param {number} votes How many votes has this answer
      * @constructor
      */
     constructor(id, text, votes){
