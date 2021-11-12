@@ -102,7 +102,7 @@ class Survey {
      * @param {boolean} isClosed Is the survey still running?
      * @constructor
      */
-    constructor(id, title, surveyAnswers, isClosed) {
+    constructor(title, surveyAnswers, isClosed) {
         this.#id = id;
         this.#title = title;
         this.#answers = surveyAnswers;
@@ -124,6 +124,20 @@ class Survey {
         //Vote for answer
         let answer = this.#answers.find(answer => answer.id === answerId);
         answer.votes++;
+    }
+
+    /**
+     * This method overrides the default toJSON method, and returns object WITH the private properties, so they will be passed to the Backend
+     * @return {{isClosed: boolean, answers: Array<SurveyAnswer>, id: string, title: string}} Object with the private properties
+     * @override
+     */
+    toJSON() {
+        return {
+            id: this.#id,
+            title: this.#title,
+            answers: this.#answers,
+            isClosed: this.#isClosed
+        };
     }
 
     //</editor-fold>

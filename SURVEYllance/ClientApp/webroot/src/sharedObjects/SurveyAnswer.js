@@ -80,7 +80,7 @@ class SurveyAnswer {
      * @param {number} votes How many votes has this answer
      * @constructor
      */
-    constructor(id, text, votes){
+    constructor(text, votes){
         this.#id = id;
         this.#text = text;
         this.#votes = votes;
@@ -88,4 +88,16 @@ class SurveyAnswer {
 
     //</editor-fold>
 
+    /**
+     * This method overrides the default toJSON method, and returns object WITH the private properties, so they will be passed to the Backend
+     * @return {{votes: number, id: string, text: string}} Object with the private properties
+     * @override
+     */
+    toJSON() {
+        return {
+            id: this.#id,
+            text: this.#text,
+            votes: this.#votes
+        }
+    }
 }

@@ -176,8 +176,19 @@ namespace SURVEYllance.Manager
         /// <param name="connectionId">Connection-ID of participant</param>
         public async Task LeaveRoom(string connectionId)
         {
+
             // Get the room
-            var room = GetRoomByConId(connectionId);
+            Room room;
+            //If there is no room to leave just return
+            try
+            { 
+                room = GetRoomByConId(connectionId);
+            }
+            catch
+            {
+                return;
+            }
+
 
             //Remove the participant from the room
             room.Participants.Remove(connectionId);

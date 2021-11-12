@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Net;
 using Microsoft.AspNetCore.Builder;
@@ -63,7 +62,7 @@ namespace SURVEYllance
             {
                 //endpoints.MapGet("/", async context => { await context.Response.WriteAsync("Hello World!"); });
                 //TODO: Add check if room exists
-                endpoints.MapGet("/room/{JoinId?}",
+                endpoints.MapGet("/rooms/{JoinId?}",
                     async context =>
                     {
                         var joinId = context.Request.RouteValues["JoinId"] as string;
@@ -71,13 +70,13 @@ namespace SURVEYllance
                         {
                             context.Response.StatusCode = (int) HttpStatusCode.UnprocessableEntity;
                             await context.Response.WriteAsync("Invalid Join-ID");
-                            throw new NullReferenceException("Join-ID is null");
+                            return;
                         }
                         
                         if (joinId == "Teapot:)")
                         {
                             context.Response.StatusCode = 418;
-                            await context.Response.WriteAsync("You found me. I#m a teapot");
+                            await context.Response.WriteAsync("You found me. I'm a teapot");
                             return;
                         }
 
@@ -96,6 +95,7 @@ namespace SURVEYllance
                         
                     });
                 endpoints.Redirect("/test/{JoinId?}", "/testing.html?id={JoinId?}");
+                endpoints.Redirect("/join/{JoinId?}", "/join.html?id={JoinId?}");
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");

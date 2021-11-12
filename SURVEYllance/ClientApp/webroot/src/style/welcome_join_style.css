@@ -55,17 +55,6 @@ HTML:
     top: 0;
     left: 0;
     width: 100%;
-    height: 400px;
-    margin-top: -200px;
-    overflow: hidden;
-}
-.wrapper {
-    background: #50a3a2;
-    background: linear-gradient(to bottom right, #50a3a2 0%, #53e3a6 100%);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
     height: 100%;
     margin-top: 0;
     overflow: hidden;

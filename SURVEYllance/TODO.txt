@@ -26,6 +26,9 @@ Settings:
 
 Frontend:
     - new.html has to be included in index.html somehow, because there is no way to pass the connection to another page and we need to still listen for the events
+    - If you leave/destroy a room !!on purpose!!, the client should call `sessionStorage.clear();`
+    - USE IMPORT IN JS: https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Statements/import
+        - Use mjs instead of js? https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
 
 backend:
     - rename On methods Event names and delegates

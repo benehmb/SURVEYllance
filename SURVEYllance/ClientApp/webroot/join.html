@@ -13,13 +13,39 @@
     <!-- Import Styles and Icons-->
     <link href="src/icons/baseline_class_black_18dp.ico" rel="shortcut icon" type="image/x-icon"/>
     <link href="src/style/welcome_join_style.css" rel="stylesheet" type="text/css">
-    <style>
-        div.input-field > label {
-            color: white;
+    <style type="text/css">
+        /* label color */
+        .input-field label {
+            color: #d0d0d0!important;
         }
-        div.input-field > input {
-            border-bottom: 1px solid white !important;
+        /* label underline color */
+        .input-field input[type=text] {
+            border-bottom: 1px solid #d0d0d0!important;
         }
+        /* label focus color */
+        .input-field input[type=text]:focus + label {
+            color: white!important;
+        }
+        /* label underline focus color */
+        .input-field input[type=text]:focus {
+            border-bottom: 1px solid white!important;
+            box-shadow: 0 1px 0 0 white!important;
+        }
+        /* valid color */
+        .input-field input[type=text].valid {
+            border-bottom: 1px solid white!important;
+            box-shadow: 0 1px 0 0 white!important;
+        }
+        /* invalid color */
+        .input-field input[type=text].invalid {
+            border-bottom: 1px solid red!important;
+            box-shadow: 0 1px 0 0 red!important;
+        }
+        /* icon prefix focus color */
+        .input-field .prefix.active {
+            color: white!important;
+        }
+
     </style>
 
     <!-- Optimise for moblie devices -->
@@ -45,12 +71,12 @@
         <h1>Welcome to <b>SURVEY</b>llance!</h1>
         <h3>Join room by entering Room-Code below:</h3>
         <form>
-            <div class="input-field white-text">
-                <input id="roomCode" type="text">
-                <label for="roomCode">Room-Code</label>
+            <div class="input-field">
+                <input id="joinId" type="text">
+                <label for="joinId">Join-ID</label>
             </div>
         </form>
-        <a class="btn" href="participant.html">Join room</a>
+        <a class="btn" onclick="JoinRoom()">Join room</a>
     </div>
     <ul class="bg-bubbles">
         <li></li>
@@ -67,5 +93,78 @@
 </div>
 
 <script type="text/javascript" src="src/materialize/js/materialize.min.js"></script>
+<script type="text/javascript">
+    //Get the join-id from the URL and put it into the input field if exists
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
+    document.getElementById('joinId').value = id;
+
+    //Do anything needed to join a room:
+    // - Check if the room exists
+    // - Set anything in the localStorage (See readme.md for more details what to save in the localStorage)
+    // - Redirect to the room
+    function JoinRoom() {
+        //Get the join-id from the input field
+        var joinId = document.getElementById("joinId").value;
+
+        //Create promise for the ajax request
+        var promise = new Promise((resolve, reject) => {
+            //Initialize the ajax request
+            var roomRequest = new XMLHttpRequest();
+
+            //Set the request method and url
+            roomRequest.open("GET",  window.location.origin + "/rooms/"+joinId, true);
+
+            //Handle the response
+            roomRequest.onload = () =>{
+                if (roomRequest.status === 200) {
+                    resolve(true);
+                } else if (roomRequest.status === 404) {
+                    resolve(false);
+                } else {
+                    reject(Error(roomRequest.statusText));
+                }
+            };
+
+            //Handle errors
+            roomRequest.onerror = () => {
+                reject(Error("Network Error"));
+            };
+
+            //Send the request
+            roomRequest.send();
+        });
+
+        //When promise comes back, check results
+        promise.then(
+            //If promise resolves, check result
+            function(result) {
+                if(result) {
+                    M.toast({html: 'Room found. Redirecting...'});
+                    // Check browser support
+                    if (typeof(Storage) !== "undefined") {
+                        //Setting up the localStorage
+                        sessionStorage.clear();
+                        sessionStorage.setItem("type", false);
+                        sessionStorage.setItem("joinId", joinId);
+                        window.location.href = "participant.html";
+                    } else {
+                        alert("Sorry, your browser does not support Web Storage...");
+                    }
+                }else {
+                    //Notify user, if room does not exist
+                    document.getElementById("joinId").classList.add("invalid");
+                    M.toast({html: 'No room with this ID was found'});
+                }
+            },
+            //If promise rejects, show error
+            function (error) {
+                alert(error);
+                throw error;
+            }
+        );
+
+    }
+</script>
 </body>
 </html>

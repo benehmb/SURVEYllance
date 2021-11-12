@@ -47,14 +47,25 @@ class Question{
 
     /**
      * Constructor to create a question
-     * @param {string} id id to identify the question from backend calls
      * @param {string} title title of this question
      */
-    constructor(id, title) {
-        this.#id = id;
+    constructor(title) {
         this.#title = title;
     }
 
     //</editor-fold>
+
+    /**
+     * This method overrides the default toJSON method, and returns object WITH the private properties, so they will be passed to the Backend
+     * @return {{id: string, title: string}} Object with the private properties
+     * @override
+     */
+    toJSON(){
+        return {
+            id: this.#id,
+            title: this.#title
+        }
+    }
+
 
 }

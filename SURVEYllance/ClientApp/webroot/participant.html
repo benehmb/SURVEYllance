@@ -56,6 +56,49 @@
 <!-- Content -->
 <div>
 
+    <!-- Popup for new surveys -->
+    <div class="popup" id="newDialog" style="display: none">
+        <div class="row">
+            <div class="card">
+                <div class="card-content">
+                    <form id="questionForm">
+                        <h4>Question:</h4>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input id="question" type="text" class="validate">
+                                <label for="question" class="inline">Question</label>
+                                <span class="helper-text" data-error="wrong" data-success="right">The question you want to ask</span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-action">
+                    <button type="submit" onclick="askQuestionSubmit()" class="waves-effect waves-light btn white-text">
+                        Ask Question
+                    </button>
+                    <button onclick="document.getElementById('newDialog').style.display = 'none'" class="waves-effect waves-light btn white-text red">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--<editor-fold desc="New Question Button">-->
+    <div class="row">
+        <div class="card hoverable" onclick="document.getElementById('newDialog').style.display = 'flex'">
+            <div class="card-content teal-text">
+                <div class="card-_title">
+                    <div class="valign-wrapper">
+                        <i class="material-icons">add</i>
+                        <p style="font-weight: bold">Ask a question</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--</editor-fold>-->
+
     <!--List of already made surveys-->
     <!--<editor-fold desc="Demo Surveys">-->
     <div class="row" id="surveys">
@@ -107,31 +150,16 @@
 <script src="src/sharedObjects/SurveyAnswer.js" type="text/javascript"></script>
 <script src="src/sharedObjects/Survey.js" type="text/javascript"></script>
 <script src="src/sharedObjects/Question.js" type="text/javascript"></script>
+<script src="src/script/ParticipantWebsocket.js" type="text/javascript"></script>
 <script type="text/javascript">
     const animTime = 1000;
 
-    // Connect to Websocket
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/participant")
-        .configureLogging(signalR.LogLevel.Information)
-        .build();
-
-    async function start() {
-        try {
-            await connection.start();
-            console.log("SignalR Connected.");
-        } catch (err) {
-            console.log(err);
-            setTimeout(start, 5000);
-        }
-    };
-
-    connection.onclose(async () => {
-        await start();
-    });
-
-    // Start the connection.
-    start();
+    function askQuestionSubmit(){
+        let questionDOMElem = document.getElementById('question');
+        let question = new Question(questionDOMElem.value)
+        console.log(JSON.stringify(question));
+        AskQuestion(question);
+    }
 
     /**
      * Delete given element from card action

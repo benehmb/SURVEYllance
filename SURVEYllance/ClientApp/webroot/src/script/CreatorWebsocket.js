@@ -15,18 +15,12 @@ async function start() {
         console.log("SignalR Connected.");
         joinId = await CreateRoom();
         console.log("New SURVEYllance-Session with JoinId: " + joinId);
+        console.log("Go to '" + window.location.origin + "/join/" + encodeURIComponent(joinId) + "' to join it");
     } catch (err) {
         console.log(err);
         setTimeout(start, 5000);
     }
 };
-
-//TODO: Do we want a retry? this wil create a new room, so we need reusable sessions or no retry
-
-// Retry if connection loses
-// connection.onclose(async () => {
-//     await start();
-// });
 
 // Start the connection.
 start();
@@ -77,11 +71,13 @@ connection.on("OnNewSurvey", (survey) => {
 /**
  * Will be called by the server when a room has been destroyed
  */
-connection.on("OnRoomDestroyed", () => {
+connection.on("OnRoomDestroy", () => {
     //Quit connection and leave page
 });
 
 //</editor-fold>
+
+//TODO: Region Other
 
 //</editor-fold>
 
@@ -188,6 +184,7 @@ function DestroyRoom() {
     try {
         connection.invoke("DestroyRoom");
         //TODO: Leave page
+        //TODO: Remove localStorage
     } catch (err) {
         console.error(err);
     }

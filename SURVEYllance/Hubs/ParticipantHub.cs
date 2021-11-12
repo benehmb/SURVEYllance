@@ -23,7 +23,7 @@ namespace SURVEYllance.Hubs
         /// <summary>
         /// Update Survey if the results change
         /// </summary>
-        /// <param name="id">id of the survey to update</param>
+        /// <param name="id">surveyId of the survey to update</param>
         /// <param name="answer">The answer that has been changed</param>
         /// <returns></returns>
         Task OnNewSurveyResults(string id, SurveyAnswer answer);
@@ -32,7 +32,7 @@ namespace SURVEYllance.Hubs
         /// <summary>
         /// Close the survey on the Client-Side
         /// </summary>
-        /// <param name="id">id of the survey to update</param>
+        /// <param name="id">surveyId of the survey to update</param>
         /// <returns></returns>
         Task OnSurveyClose(string id);
         
@@ -40,7 +40,7 @@ namespace SURVEYllance.Hubs
         /// <summary>
         /// Remove the survey on the Client-Side
         /// </summary>
-        /// <param name="id">id of the survey to remove</param>
+        /// <param name="id">surveyId of the survey to remove</param>
         /// <returns></returns>
         Task OnSurveyRemove(string id);
         
@@ -110,11 +110,11 @@ namespace SURVEYllance.Hubs
         /// <summary>
         /// API-Method to dismiss an survey
         /// </summary>
-        /// <param name="id">ID of the survey to be dismissed</param>
+        /// <param name="surveyId">ID of the survey to be dismissed</param>
         /// <returns>The survey with answers visible</returns>
-        public async Task<Survey> Dismiss(string id)
+        public async Task<Survey> Dismiss(string surveyId)
         {
-            return _manager.Dismiss(Context.ConnectionId, id);
+            return _manager.Dismiss(Context.ConnectionId, surveyId);
         }
         
         #endregion
@@ -128,6 +128,14 @@ namespace SURVEYllance.Hubs
         public async Task JoinRoom(string joinId)
         {
             await _manager.JoinRoom(Context.ConnectionId, joinId);
+        }
+        
+        /// <summary>
+        /// API-Method to leave a room
+        /// </summary>
+        public async Task LeaveRoom()
+        {
+            await _manager.LeaveRoom(Context.ConnectionId);
         }
 
         #endregion

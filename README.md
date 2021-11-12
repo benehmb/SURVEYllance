@@ -78,3 +78,16 @@ On the front-end side, i use [Materialize](https://materializecss.com/) for the 
 
 That's it. The Run-Configuration should already be there, so just click play in your IDE and there you go. If it won`t work, you can use the Script from [How to setup > Other](#Other)
 
+## Documentation
+
+This section is for anything, that is related to documentation, and has no place in any other File
+
+### Browser-Session-Storage
+
+What is stored in the session-storage and what does it mean
+
+| Key            | Value                                                        | Description                                                  |
+| -------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| `type`         | `bool: true` - The Person is a `creator` of this room<br />`bool: false` - The Person is a `participant` of this room | Used to determinate if a User is a `creator` or a `participant`<br />If you just change the URL from `pareticipant.html` to `creator.html` this is the first hurdle to overcome |
+| `joinId`       | `string` - ID                                                | ID of the room you are in. Used to reconnect if you reload the page or accidentally close the Tab |
+| `creatorToken` | `string` - Token                                             | Used to verify, that you are the creator of this room. on reloading/reconnecting<br />**Not used at the moment, since we have no token-generation yet** |
