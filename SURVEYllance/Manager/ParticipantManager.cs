@@ -50,8 +50,11 @@ namespace SURVEYllance.Manager
             
             //Vote for the answer
             roomSurvey?.VoteForAnswer(answerId);
-            
-            //TODO: Add listener for new answers
+
+            roomSurvey.OnVotesChange += (pSurvey, pAnswer) =>
+            {
+                _participantHubContext.Clients.Client(connectionId).SendAsync("OnNewSurveyResult", pSurvey.Id, pAnswer);
+            };
 
             return roomSurvey;
         }
@@ -75,6 +78,10 @@ namespace SURVEYllance.Manager
             //TODO: Dismiss
             
             //TODO: Add listener for new answers
+            roomSurvey.OnVotesChange += (pSurvey, pAnswer) =>
+            {
+                _participantHubContext.Clients.Client(connectionId).SendAsync("OnNewSurveyResult", pSurvey.Id, pAnswer);
+            };
 
             return roomSurvey;
         }
