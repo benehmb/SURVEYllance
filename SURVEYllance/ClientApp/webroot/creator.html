@@ -98,7 +98,7 @@
         </div>
     </div>
     <!-- Create survey -->
-    <!--<editor-fold desc="New Survey Example Buttons">-->
+    <!--<editor-fold desc="New survey buttons">-->
     <div class="row">
         <div class="card hoverable newSurvey" onclick="document.getElementById('newDialog').style.display = 'flex'">
             <div class="card-content teal-text">
@@ -111,23 +111,6 @@
             </div>
         </div>
     </div>
-    <!--
-    <div class="row">
-        <div class="card" onclick="location.href='new.html';">
-            <div class="card-content">
-                <div class="card-_title">
-                    <div class="valign-wrapper">
-                        <i class="material-icons" style="font-weight: bold; padding: 0px 5px;">poll</i>
-                        <p style="font-weight: bold">Create new Survey</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <a class="btn-floating btn-large waves-effect waves-light right" style="margin: 5px;" onclick="location.href='new.html';"><i class="material-icons">add</i></a>
-    </div>
-    -->
     <!--</editor-fold>-->
     <!-- Divider "Recent Surveys" -->
     <div class="row">
@@ -138,82 +121,8 @@
         </div>
     </div>
     <!--List of already made surveys-->
-    <!--<editor-fold desc="Demo Surveys">-->
+    <!--<editor-fold desc="Space for surveys">-->
     <div class="row" id="surveys">
-        <div class="row survey">
-            <div class="card hoverable">
-                <div class="card-content" onclick="toggleCard(this)">
-                    <div class="card-_title" style="padding-bottom: 5px;">
-                        <div class="valign-wrapper">
-                            <i class="material-icons">help_outline</i>
-                            <p>What is love?</p>
-                        </div>
-                    </div>
-                    <div class="surveyStatsNormal">
-                        <div class="row">
-                            <div class="col s4">
-                                <p class="truncate">Baby don't hurt me</p>
-                            </div>
-                            <div class="progress col s7 offset-s1">
-                                <div class="determinate" style="width: 70%"></div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col s4">
-                                <p class="truncate">Don't hurt me</p>
-                            </div>
-                            <div class="progress col s7 offset-s1">
-                                <div class="determinate" style="width: 20%"></div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col s4">
-                                <p class="truncate">No more</p>
-                            </div>
-                            <div class="progress col s7 offset-s1">
-                                <div class="determinate" style="width: 10%"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="surveyStatsExtended hidden">
-                        <div class="row">
-                            <div class="col s3">
-                                <p class="truncate">1: 70%</p>
-                            </div>
-                            <div class="progress col s9">
-                                <div class="determinate" style="width: 70%"></div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col s3">
-                                <p class="truncate">2: 20%</p>
-                            </div>
-                            <div class="progress col s9">
-                                <div class="determinate" style="width: 20%"></div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col s3">
-                                <p class="truncate">3: 10%</p>
-                            </div>
-                            <div class="progress col s9">
-                                <div class="determinate" style="width: 10%"></div>
-                            </div>
-                        </div>
-                        <p>1: Baby don't hurt me</p>
-                        <p>2: Don't hurt me</p>
-                        <p>3: No more</p>
-                    </div>
-                </div>
-                <div class="card-action">
-                    <a href="#">Close survey</a>
-                    <a onclick="removeElement(this)">Remove survey</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row" style="padding: 5px;">
-        <a class="waves-effect waves-light btn" style="width: 100%; cursor: pointer; font-weight: bold" onclick="createDemoSurvey()">New Demo-Survey</a>
     </div>
     <!--</editor-fold>-->
     <!-- Divider "Questions" -->
@@ -225,21 +134,8 @@
         </div>
     </div>
     <!--List of upcoming questions-->
-    <!--<editor-fold desc="Demo questions">-->
+    <!--<editor-fold desc="Space for questions">-->
     <div class="row" id="questions">
-        <div class="row">
-            <div class="card">
-                <div class="card-content">
-                    <p>What is love?</p>
-                </div>
-                <div class="card-action">
-                    <a onclick="removeElement(this)">Done</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row" style="padding: 5px;">
-        <a class="waves-effect waves-light btn" style="width: 100%; cursor: pointer; font-weight: bold" onclick="createDemoQuestion()">New Demo-Question</a>
     </div>
     <!--</editor-fold>-->
 </div>
@@ -258,98 +154,6 @@
 <script src="src/script/CreatorWebsocket.js"></script>
 <script src="src/script/newSurveyPopup.js"></script>
 <script type="text/javascript">
-
-    function createDemoSurvey(){
-        const randomNumber = () => {
-            return Math.floor(Math.random() * 100);
-        }
-        let someAnswers = [];
-        let someSurvey;
-        let answer1, answer2, answer3;
-        switch (Math.floor((Math.random() *3) +1)){
-            case 1:
-                answer1 = new SurveyAnswer('... give you up');
-                answer1.votes = randomNumber();
-                someAnswers.push(answer1);
-                answer2 = new SurveyAnswer('... let you down');
-                answer2.votes = randomNumber();
-                someAnswers.push(answer2);
-                answer3 = new SurveyAnswer('... run around');
-                answer3.votes = randomNumber();
-                someAnswers.push(answer3);
-
-                someSurvey = new Survey('He will never...', someAnswers);
-                break;
-            case 2:
-                answer1 = new SurveyAnswer('... can\'t');
-                answer1.votes = randomNumber();
-                someAnswers.push(answer1);
-                answer2 = new SurveyAnswer('... scan');
-                answer2.votes = randomNumber();
-                someAnswers.push(answer2);
-                answer3 = new SurveyAnswer('...  can');
-                answer3.votes = randomNumber();
-                someAnswers.push(answer3);
-
-                someSurvey = new Survey('Yes we...', someAnswers);
-                break;
-            case 3:
-                answer1 = new SurveyAnswer('... Dream');
-                answer1.votes = randomNumber();
-                someAnswers.push(answer1);
-                answer2 = new SurveyAnswer('... Steam');
-                answer2.votes = randomNumber();
-                someAnswers.push(answer2);
-                answer3 = new SurveyAnswer('...  Stream');
-                answer3.votes = randomNumber();
-                someAnswers.push(answer3);
-
-                someSurvey = new Survey('I have a...', someAnswers);
-                break;
-        }
-        let surveyDom = new SurveyDOM(someSurvey);
-        document.getElementById('surveys').appendChild(surveyDom.domObject);
-    }
-    function createDemoQuestion(){
-        let question;
-        switch (Math.floor((Math.random() * 10) + 1)){
-            case 1:
-                question = new Question('Why does Donald Duck wear a towel when he comes out of the shower when he doesn’t usually wear any pants?')
-                break;
-            case 2:
-                question = new Question('If corn oil is made from corn and vegetable oil is made from vegetables. What is baby oil made from?')
-                break;
-            case 3:
-                question = new Question('Why is an electrical outlet called an outlet when you plug things into it? Shouldn’t it be called an inlet?')
-                break;
-            case 4:
-                question = new Question('Why is an alarm clock going “off” when it actually turns on?')
-                break;
-            case 5:
-                question = new Question('Why is lemon juice made with artificial flavor and dishwashing liquid made with real lemons?')
-                break;
-            case 6:
-                question = new Question('Why is the man who invests all your money called a broker?')
-                break;
-            case 7:
-                question = new Question('If quizzes are quizzical, what are tests?')
-                break;
-            case 8:
-                question = new Question('If an ambulance is on its way to save someone, and it runs someone over, does it stop to help them?')
-                break;
-            case 9:
-                question = new Question('Why is it that people say they “slept like a baby” when babies wake up like every two hours?')
-                break;
-            case 10:
-                question = new Question('What do you call male ballerinas?')
-                break;
-        }
-        let questionDom = new QuestionDOM(question)
-        document.getElementById('questions').appendChild(questionDom.domObject);
-    }
-    createDemoSurvey();
-    createDemoQuestion();
-
 
 </script>
 </body>

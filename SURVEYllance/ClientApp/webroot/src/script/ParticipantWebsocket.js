@@ -55,15 +55,15 @@ const surveys = [];
 //<editor-fold desc="Client">
 
 //<editor-fold desc="Survey">
+//TODO: We need another SurveyDOM-Class, because we won't close or remove a Survey as a participant
 
-//TODO: Insert Survey-API-Methods
 /**
  * Will be called by the server when the results of a survey change
  * @param {string} surveyId ID of the survey
  * @param {SurveyAnswer} answer the answer, which has changed
  */
 connection.on("OnNewSurveyResult", (surveyId, answer) => {
-    //TODO: Update the survey
+    surveys.find(survey => survey.id === surveyId).OnNewSurveyResult(answer);
 });
 
 /**
@@ -81,7 +81,15 @@ connection.on("OnNewSurvey", (survey) => {
  * @param {string} surveyId ID of the survey
  */
 connection.on("OnSurveyClose", (surveyId) => {
-    //Delete Survey
+    //Find old survey
+    const survey = surveys.find(survey => survey.id === surveyId);
+    survey.RemoveSurvey();
+
+    //Replace with new one
+    const surveyDOM = new SurveyDOM(survey);
+    surveys.splice(surveys.indexOf(survey), 1);
+    surveys.push(surveyDOM)
+    surveyContainer.appendChild(surveyDOM.domObject);
 });
 
 /**
@@ -89,7 +97,8 @@ connection.on("OnSurveyClose", (surveyId) => {
  * @param {string} surveyId The ID of the survey to delete
  */
 connection.on("OnSurveyRemove", (surveyId) => {
-    //Delete Survey
+    //Find and remove survey
+    surveys.find(survey => survey.id === surveyId).RemoveSurvey();
 });
 
 //</editor-fold>
@@ -137,7 +146,17 @@ function AskQuestion(question) {
  */
 async function Vote(surveyId, answerId) {
     try {
-        return await connection.invoke("Vote", surveyId, answerId);
+        //Find old survey and remove it
+        const oldSurvey = surveys.find(survey => survey.id === surveyId)
+        oldSurvey.RemoveSurvey();
+        surveys.splice(surveys.indexOf(oldSurvey), 1);
+
+        //Replace with new one
+        const survey = await connection.invoke("Vote", surveyId, answerId);
+        const surveyDOM = new SurveyDOM(survey);
+        surveys.push(surveyDOM)
+        surveyContainer.appendChild(surveyDOM.domObject);
+
     } catch (err) {
         console.error(err);
     }
@@ -150,7 +169,17 @@ async function Vote(surveyId, answerId) {
  */
 async function Dismiss(surveyId) {
     try {
-        return await connection.invoke("Dismiss", surveyId);
+        //Find old survey and remove it
+        const oldSurvey = surveys.find(survey => survey.id === surveyId)
+        oldSurvey.RemoveSurvey();
+        surveys.splice(surveys.indexOf(oldSurvey), 1);
+
+        //Replace with new one
+        const survey = await connection.invoke("Dismiss", surveyId);
+        const surveyDOM = new SurveyDOM(survey);
+        surveys.push(surveyDOM)
+        surveyContainer.appendChild(surveyDOM.domObject);
+
     } catch (err) {
         console.error(err);
     }
