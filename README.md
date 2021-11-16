@@ -68,7 +68,7 @@ Note for Rider: I added `//FIXME`-comments:
 4. Enter `\bfixme\b.*` as Pattern
 5. Optional: Change color
 
-![fixme-settings](Images\fixme-settings.png)
+![fixme-settings](Images/fixme-settings.png)
 
 (Also described [Here]([Are FIXME comments supported in Rider? Can only see TODO items – Rider Support | JetBrains](https://rider-support.jetbrains.com/hc/en-us/community/posts/360009890900-Are-FIXME-comments-supported-in-Rider-Can-only-see-TODO-items)))
 
