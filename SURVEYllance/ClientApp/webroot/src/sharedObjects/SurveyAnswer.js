@@ -27,7 +27,7 @@ class SurveyAnswer {
      * @type {number}
      * @private
      */
-    #votes = 0;
+    #votes;
 
     //</editor-fold>
 
@@ -63,7 +63,7 @@ class SurveyAnswer {
      * @param {string} value new value
      */
     set votes(value) {
-        if (this.#votes < value) {
+        if (this.#votes === undefined || this.#votes < value) {
             this.#votes = value;
             //TODO: fire event?
         }
@@ -75,15 +75,11 @@ class SurveyAnswer {
 
     /**
      * Constructor to create answers
-     * @param {string} id id to identify the answer from backend calls
      * @param {string} text Name of the answer. NOT the number displayed before, which should be the Index
-     * @param {number} votes How many votes has this answer
      * @constructor
      */
-    constructor(text, votes){
-        this.#id = id;
+    constructor(text){
         this.#text = text;
-        this.#votes = votes;
     }
 
     //</editor-fold>

@@ -14,8 +14,8 @@ class QuestionDOM extends Question{
      */
     constructor(question) {
         //TODO: Backend writes variables in lowercase, but frontend writes them in uppercase.
-        super(question.id, question.title);
-        this.#domObject = this.createQuestionDOM(question);
+        super(question.title);
+        this.#domObject = this.#createQuestionDOM(question);
     }
 
     /**
@@ -23,7 +23,7 @@ class QuestionDOM extends Question{
      * @param {Question} question the question to be parsed
      * @return {HTMLDivElement} the element to be displayed
      */
-    createQuestionDOM(question) {
+    #createQuestionDOM(question) {
         let questionRow = document.createElement('div');
         questionRow.classList.add('row');
 

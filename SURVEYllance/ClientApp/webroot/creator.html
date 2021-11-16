@@ -64,7 +64,7 @@
                     <h4>Question:</h4>
                     <div class="row">
                         <div class="input-field col s12">
-                            <input id="question" type="text" class="validate">
+                            <input id="question" type="text" class="validate" required>
                             <label for="question" class="inline">Question</label>
                             <span class="helper-text" data-error="wrong" data-success="right">The question you want to ask</span>
                         </div>
@@ -72,14 +72,14 @@
                     <h4>answers:</h4>
                     <div class="row valign-wrapper answer animate">
                         <div class="input-field col s11">
-                            <input id="answer1" type="text" class="validate">
+                            <input id="answer1" type="text" class="validate" required>
                             <label for="answer1">Answer 1</label>
                         </div>
                         <i class="material-icons col s1 red-text" onclick="deleteAnswer(this)">delete_forever</i>
                     </div>
                     <div class="row valign-wrapper answer animate">
                         <div class="input-field col s11">
-                            <input id="answer2" type="text" class="validate">
+                            <input id="answer2" type="text" class="validate" required>
                             <label for="answer2">Answer 2</label>
                         </div>
                         <i class="material-icons col s1 red-text" onclick="deleteAnswer(this)">delete_forever</i>
@@ -90,7 +90,7 @@
                 </div>
             </div>
             <div class="submitBtn card-action">
-                <button type="submit" onclick="document.getElementById('newDialog').style.display = 'none'" class="waves-effect waves-light btn white-text"> <!-- onclick="document.getElementsByTagName('form')[0].submit()" -->
+                <button type="submit" onclick="submitSurveyForm()" class="waves-effect waves-light btn white-text"> <!-- onclick="document.getElementsByTagName('form')[0].submit()" -->
                     Create Survey
                 </button>
             </div>
@@ -259,89 +259,50 @@
 <script src="src/script/newSurveyPopup.js"></script>
 <script type="text/javascript">
 
-    //TODO: Move to SurveyDOM.js
-    /**
-     * Toggle between normalSurveyStats and ExtendedSurveyStats
-     * @param {HTMLElement} card The card which contains the information to be toggled
-     */
-    function toggleCard(card){
-        let surveyStatsNormal = card.getElementsByClassName('surveyStatsNormal')[0];
-        let surveyStatsExtended = card.getElementsByClassName('surveyStatsExtended')[0];
-        //TODO: Replace toggle with fancy animation
-        surveyStatsNormal.classList.toggle('hidden');
-        surveyStatsExtended.classList.toggle('hidden');
-        //doAnimations(surveyStatsNormal, surveyStatsExtended).then(()=>console.log("finished"));
-    }
-
-    // <editor-fold desc="Not working animation stuff">
-    async function doAnimations(objectToFadeOut, objectToFadeIn){
-        await fadeInElement(objectToFadeIn);
-        await fadeOutElement(objectToFadeOut);
-    }
-    function fadeOutElement(elem){
-        return new Promise((resolve)=>{
-            elem.addEventListener('transitionend', function() {
-                window.console.log(window.getTime() + "FadeOutComplete");
-                elem.style.display = 'none';
-                elem.classList.remove('fadeOut');
-                elem.removeEventListener('transitionend', this);
-                resolve();
-            });
-            elem.classList.add('fadeOut');
-        });
-    }
-
-    function fadeInElement(elem) {
-        return new Promise((resolve) => {
-            elem.style.display = 'inherit';
-            elem.addEventListener('transitionend', function() {
-                window.console.log(window.getTime() + "FadeInComplete");
-                elem.classList.remove('fadeIn');
-                elem.removeEventListener('transitionend', this);
-                resolve();
-            });
-            elem.classList.add('fadeIn');
-        });
-    }
-    // </editor-fold>
-
-    //TODO: Move to SurveyDOM.js because is is already implemented in QuestionDOM.js
-    /**
-     * Delete given element from card action
-     * @param elem card Action delete button
-     */
-    function removeElement(elem) {
-        //TODO: Add some fancy animation
-        // get card from action
-        let card = elem.parentNode.parentNode.parentNode;
-        card.remove();
-    }
-
     function createDemoSurvey(){
         const randomNumber = () => {
             return Math.floor(Math.random() * 100);
         }
         let someAnswers = [];
         let someSurvey;
+        let answer1, answer2, answer3;
         switch (Math.floor((Math.random() *3) +1)){
             case 1:
-                someAnswers.push(new SurveyAnswer('... give you up', randomNumber()));
-                someAnswers.push(new SurveyAnswer('... let you down', randomNumber()));
-                someAnswers.push(new SurveyAnswer('...  run around', randomNumber()));
+                answer1 = new SurveyAnswer('... give you up');
+                answer1.votes = randomNumber();
+                someAnswers.push(answer1);
+                answer2 = new SurveyAnswer('... let you down');
+                answer2.votes = randomNumber();
+                someAnswers.push(answer2);
+                answer3 = new SurveyAnswer('... run around');
+                answer3.votes = randomNumber();
+                someAnswers.push(answer3);
 
                 someSurvey = new Survey('He will never...', someAnswers);
                 break;
             case 2:
-                someAnswers.push(new SurveyAnswer('... can\'t', randomNumber()));
-                someAnswers.push(new SurveyAnswer('... scan', randomNumber()));
-                someAnswers.push(new SurveyAnswer('...  can', randomNumber()));
+                answer1 = new SurveyAnswer('... can\'t');
+                answer1.votes = randomNumber();
+                someAnswers.push(answer1);
+                answer2 = new SurveyAnswer('... scan');
+                answer2.votes = randomNumber();
+                someAnswers.push(answer2);
+                answer3 = new SurveyAnswer('...  can');
+                answer3.votes = randomNumber();
+                someAnswers.push(answer3);
 
                 someSurvey = new Survey('Yes we...', someAnswers);
                 break;
             case 3:
-                someAnswers.push(new SurveyAnswer('... Dream', randomNumber()));
-                someAnswers.push(new SurveyAnswer('... Steam', randomNumber()));
-                someAnswers.push(new SurveyAnswer('...  Stream', randomNumber()));
+                answer1 = new SurveyAnswer('... Dream');
+                answer1.votes = randomNumber();
+                someAnswers.push(answer1);
+                answer2 = new SurveyAnswer('... Steam');
+                answer2.votes = randomNumber();
+                someAnswers.push(answer2);
+                answer3 = new SurveyAnswer('...  Stream');
+                answer3.votes = randomNumber();
+                someAnswers.push(answer3);
 
                 someSurvey = new Survey('I have a...', someAnswers);
                 break;

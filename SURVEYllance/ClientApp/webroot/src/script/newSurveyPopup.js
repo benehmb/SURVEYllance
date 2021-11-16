@@ -29,6 +29,10 @@ var observeDOM = (function(){
 })();
 
 // Get Survey-Form
+/**
+ *
+ * @type {HTMLFormElement}
+ */
 const surveyForm = document.getElementById("surveyForm");
 
 // Observe surveyForm DOM Element:
@@ -61,6 +65,7 @@ function newAnswer(){
     let answerInput = document.createElement('input');
     answerInput.id = 'answer' + answerID;
     answerInput.type = "text";
+    answerInput.required = true;
     answerInput.classList.add('validate');
     //</editor-fold>
 
@@ -138,8 +143,48 @@ function deleteAnswer(answer){
     }, animTime);
 }
 
+//Check if user clicks outside of the popup and close it
 window.onclick = function(event) {
     if (event.target === document.getElementById("newDialog")) {
         document.getElementById("newDialog").style.display = "none";
     }
+}
+
+//Take over form submit event.
+surveyForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    //chech if all answers are filled
+    if(surveyForm.checkValidity())
+        //submit form if all answers are filled
+        sendData();
+    else
+        //display error if not
+        surveyForm.reportValidity();
+});
+
+function sendData() {
+    //Answers as Survey-Object-Array
+    const surveyAnswers = new Array(0);
+    //Fill surveyAnswers
+    for (let i = 0; i < answers.length; i++) {
+        surveyAnswers.push(new SurveyAnswer(answers[i].getElementsByTagName('input')[0].value));
+        if (i>=2){
+            //Delete answer, if there are more than 2
+            answers[i].remove();
+        }
+    }
+    //Create Survey-Object
+    const survey = new Survey(surveyForm.getElementsByTagName('input')[0].value, surveyAnswers, false);
+    console.log(survey);
+    NewSurvey(survey);
+    //Hide popup
+    document.getElementById('newDialog').style.display = 'none';
+    //Reset form
+    surveyForm.reset();
+}
+
+function submitSurveyForm() {
+    const domEvent = document.createEvent('Event')
+    domEvent.initEvent('submit', true, true)
+    surveyForm.dispatchEvent(domEvent)
 }

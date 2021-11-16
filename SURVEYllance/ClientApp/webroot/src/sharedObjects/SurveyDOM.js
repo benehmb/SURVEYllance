@@ -34,7 +34,7 @@ class SurveyDOM extends Survey {
     //<editor-fold desc="Getter">
 
     /**
-     * Getter for {@see #surveyStatsNormalDiv}
+     * Getter for {@see #domObject}
      * @return {HTMLElement}
      */
     get domObject() {
@@ -50,9 +50,12 @@ class SurveyDOM extends Survey {
      * @param {Survey} survey the survey to bind to DOM
      */
     constructor(survey) {
-        super(survey.id, survey.title, survey.answers, survey.isClosed);
+        super(survey.title, survey.answers);
+        this.id = survey.id;
         //calculate votesSum
-        this.#votesSum = this.answers.reduce((acc, cur) => acc + cur.votes, 0);
+        this.answers.forEach(answer => {
+            this.#votesSum += answer.votes;
+        });
         //create DOM-Object
         this.#domObject = this.#createSurvey(this);
 
@@ -68,7 +71,7 @@ class SurveyDOM extends Survey {
      * @param {SurveyAnswer} answer
      * @constructor
      */
-    OnNewSurveyResults(answer) {
+    OnNewSurveyResult(answer) {
         let answerIndex = this.answers.findIndex(value => value.id === answer.id);
         this.answers[answerIndex] = answer;
         this.#votesSum = 0;
@@ -87,6 +90,31 @@ class SurveyDOM extends Survey {
         surveyStatsExtendedDOM.forEach((_surveyExtendedStats) => {
             this.#surveyStatsExtendedDiv.appendChild(_surveyExtendedStats);
         })
+    }
+
+    /**
+     * Remove this survey from DOM and notify the server
+     */
+    RemoveSurvey() {
+        this.#domObject.remove();
+        RemoveSurvey(this.Id);
+    }
+
+    /**
+     * Close this survey and notify the server
+     */
+    CloseSurvey() {
+        CloseSurvey(this.Id);
+        //TODO: Do something to display that the survey is closed
+    }
+
+    /**
+     * Toggle between normalSurveyStats and ExtendedSurveyStats
+     */
+    ToggleSurvey() {
+        //TODO: Replace toggle with fancy animation
+        this.#surveyStatsNormalDiv.classList.toggle('hidden');
+        this.#surveyStatsExtendedDiv.classList.toggle('hidden');
     }
 
     //</editor-fold>
@@ -192,7 +220,9 @@ class SurveyDOM extends Survey {
         let surveyCardContent = document.createElement('div');
         surveyCardContent.classList.add('card-content');
         //TODO: Change to surveyCardContent.onclick...
-        surveyCardContent.setAttribute('onclick', 'toggleCard(this)');
+        surveyCardContent.onclick = () => {
+            this.ToggleSurvey();
+        };
         surveyCard.appendChild(surveyCardContent);
         //</editor-fold>
 
@@ -248,11 +278,16 @@ class SurveyDOM extends Survey {
 
         let surveyActionClose = document.createElement('a');
         surveyActionClose.innerHTML = 'Close survey';
+        surveyActionClose.onclick = () => {
+            this.CloseSurvey();
+        };
         surveyActions.appendChild(surveyActionClose);
 
         let surveyActionRemove = document.createElement('a');
-        surveyActionRemove.setAttribute('onclick', 'removeElement(this)');
         surveyActionRemove.innerHTML = 'Remove survey';
+        surveyActionRemove.onclick = () => {
+            this.RemoveSurvey();
+        };
         surveyActions.appendChild(surveyActionRemove);
         //</editor-fold>
 

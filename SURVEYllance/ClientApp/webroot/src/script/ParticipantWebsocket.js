@@ -47,6 +47,9 @@ start();
 
 // </editor-fold>
 
+const surveyContainer = document.getElementById('surveys');
+const surveys = [];
+
 //<editor-fold desc="API-Methods">
 
 //<editor-fold desc="Client">
@@ -60,8 +63,7 @@ start();
  * @param {SurveyAnswer} answer the answer, which has changed
  */
 connection.on("OnNewSurveyResult", (surveyId, answer) => {
-    //Find Survey, maybe give each survey unique id?
-    //Update Answer
+    //TODO: Update the survey
 });
 
 /**
@@ -69,7 +71,9 @@ connection.on("OnNewSurveyResult", (surveyId, answer) => {
  * @param {Survey} survey The survey to display
  */
 connection.on("OnNewSurvey", (survey) => {
-    //Post new Survey
+    let surveyDomVotable = new SurveyDOMVotable(survey);
+    surveys.push(surveyDomVotable);
+    surveyContainer.appendChild(surveyDomVotable.domObject);
 });
 
 /**

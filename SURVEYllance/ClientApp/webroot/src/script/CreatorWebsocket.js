@@ -1,5 +1,22 @@
 let joinId;
 
+//<editor-fold desc="sessionStorageValues">
+if (typeof(Storage) !== "undefined") {
+    //Get value from localStorage (See readme.md for more details what to save in the localStorage)
+    let type = sessionStorage.getItem("type");
+    joinId = sessionStorage.getItem("joinId");
+
+    //Check if type is set to "participant"
+    if (type === true){
+        M.toast({html: 'You are not a creator. Join a room or restart your Browser!'});
+        throw new Error("Not a creator");
+    }
+} else {
+    alert("Sorry, your browser does not support Web Storage...");
+    throw new Error("No browser-support for Web Storage");
+}
+//</editor-fold>
+
 // <editor-fold desc="Websocket-Connection">
 // Connect to Websocket
 const connection = new signalR.HubConnectionBuilder()
@@ -7,13 +24,56 @@ const connection = new signalR.HubConnectionBuilder()
     .configureLogging(signalR.LogLevel.Information)
     .withAutomaticReconnect()
     .build();
+connection.logging = true;
 
-//TODO: At the moment we can only create a room, not join one.
 async function start() {
     try {
         await connection.start();
         console.log("SignalR Connected.");
-        joinId = await CreateRoom();
+
+        //Get value from localStorage (See readme.md for more details what to save in the localStorage)
+        let type = sessionStorage.getItem("type");
+        joinId = sessionStorage.getItem("joinId");
+
+        //Check if type and joinId are set
+        if ((type === null || type === undefined) || (joinId === null || joinId === undefined)) {
+            //If not, create a new room
+            M.toast({html: 'Creating new room...'});
+            joinId = await CreateRoom();
+        } else {
+            //If yes, join the room
+            //Check if type is set to "creator"
+            if (type !== true){
+                M.toast({html: 'You are not a creator. Join a room or restart your Browser!'});
+                throw new Error("Not a creator");
+            }
+
+            M.toast({html: 'You have already created a room. Trying to reconnect...'});
+
+            CheckRoom(joinId).then(
+                //If promise resolves, check result
+                async function(result) {
+                    if(result) {
+                        M.toast({html: 'Room found. Joining...'});
+                        JoinRoom(joinId);
+                    }else {
+                        M.toast({html: 'No room with this ID was found. Creating a new one...'});
+                        joinId = await CreateRoom();
+                    }
+                },
+                //If promise rejects, show error
+                function (error) {
+                    alert(error);
+                    throw error;
+                }
+            );
+            //Setting up the localStorage
+            sessionStorage.clear();
+            sessionStorage.setItem("type", true);
+            sessionStorage.setItem("joinId", joinId);
+            //TODO: Insert token here
+        }
+
         console.log("New SURVEYllance-Session with JoinId: " + joinId);
         console.log("Go to '" + window.location.origin + "/join/" + encodeURIComponent(joinId) + "' to join it");
     } catch (err) {
@@ -25,7 +85,53 @@ async function start() {
 // Start the connection.
 start();
 
+/**
+ * Check if a room exists
+ * @param joinId Id of the room
+ * @return {Promise<unknown>} the promise
+ * @constructor
+ */
+function CheckRoom(joinId) {
+
+    //Create promise for the ajax request
+    var promise = new Promise((resolve, reject) => {
+        //Initialize the ajax request
+        var roomRequest = new XMLHttpRequest();
+
+        //Set the request method and url
+        roomRequest.open("GET",  window.location.origin + "/rooms/"+joinId, true);
+
+        //Handle the response
+        roomRequest.onload = () =>{
+            if (roomRequest.status === 200) {
+                resolve(true);
+            } else if (roomRequest.status === 404) {
+                resolve(false);
+            } else {
+                reject(Error(roomRequest.statusText));
+            }
+        };
+
+        //Handle errors
+        roomRequest.onerror = () => {
+            reject(Error("Network Error"));
+        };
+
+        //Send the request
+        roomRequest.send();
+    });
+
+    //Return the promise
+    return promise;
+
+}
+
 // </editor-fold>
+
+const surveyContainer = document.getElementById('surveys');
+const surveys = [];
+
+const questionContainer = document.getElementById('questions');
 
 //<editor-fold desc="API-Methods">
 
@@ -39,7 +145,7 @@ start();
  */
 connection.on("OnNewQuestion", (question) => {
     let questionDOM = new QuestionDOM(question);
-    document.getElementById('questions').appendChild(questionDOM.domObject);
+    questionContainer.appendChild(questionDOM.domObject);
 });
 
 //</editor-fold>
@@ -51,8 +157,7 @@ connection.on("OnNewQuestion", (question) => {
  * @param {SurveyAnswer} answer the answer, which has changed
  */
 connection.on("OnNewSurveyResult", (surveyId, answer) => {
-    //Find Survey, maybe give each survey unique id?
-    //Update Answer
+    surveys.find(survey => survey.id === surveyId).OnNewSurveyResult(answer);
 });
 
 /**
@@ -61,7 +166,9 @@ connection.on("OnNewSurveyResult", (surveyId, answer) => {
  * @param {Survey} survey The survey to display
  */
 connection.on("OnNewSurvey", (survey) => {
-    //Post new Survey
+    let surveyDOM = new SurveyDOM(survey);
+    surveys.push(surveyDOM);
+    surveyContainer.appendChild(surveyDOM.domObject);
 });
 
 //</editor-fold>
@@ -101,25 +208,13 @@ function RemoveQuestion(questionId) {
 /**
  * Create a new survey
  * @param {Survey} survey The survey to create
- * @deprecated
  */
-function NewSurvey(survey){
+async function NewSurvey(survey){
     try {
-        connection.invoke("NewSurvey", survey);
-    } catch (err) {
-        console.error(err);
-    }
-}
-
-/**
- * Create a new survey
- * @param {string} title title of the survey
- * @param {Array<string>} answers List of answers
- * @return {Survey} Survey object, created by the server
- */
-async function NewSurvey(title, answers) {
-    try {
-        return await connection.invoke("NewSurvey", title, answers);
+        let generatedSurvey = await connection.invoke("NewSurvey", survey);
+        let surveyDOM = new SurveyDOM(generatedSurvey);
+        surveys.push(surveyDOM);
+        surveyContainer.appendChild(surveyDOM.domObject);
     } catch (err) {
         console.error(err);
     }
@@ -144,6 +239,11 @@ function CloseSurvey(surveyId) {
  */
 function RemoveSurvey(surveyId) {
     try {
+        surveys.forEach(survey => {
+            if (survey.id === surveyId) {
+                surveys.splice(surveys.indexOf(survey), 1);
+            }
+        });
         connection.invoke("RemoveSurvey", surveyId);
     } catch (err) {
         console.error(err);

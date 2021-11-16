@@ -26,7 +26,7 @@ namespace SURVEYllance.Hubs
         /// <param name="id">surveyId of the survey to update</param>
         /// <param name="answer">The answer that has been changed</param>
         /// <returns></returns>
-        Task OnNewSurveyResults(string id, SurveyAnswer answer);
+        Task OnNewSurveyResult(string id, SurveyAnswer answer);
         
         
         /// <summary>

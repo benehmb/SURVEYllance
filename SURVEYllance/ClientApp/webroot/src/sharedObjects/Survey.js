@@ -63,6 +63,14 @@ class Survey {
     }
 
     /**
+     * Setter of {@link #id}
+     * @param {string} value ID of the survey
+     */
+    set id(value) {
+        this.#id = value;
+    }
+
+    /**
      * Setter of {@link #answers}
      * @param {Array<SurveyAnswer>} value New list of survey answers with updated values
      */
@@ -96,17 +104,13 @@ class Survey {
 
     /**
      * Constructor to create a survey
-     * @param {string} id - the id of the survey
      * @param {string} title title of the survey, typically a question
      * @param {Array<SurveyAnswer>} surveyAnswers Array of answers. Must be of {@see surveyAnswers} Object
-     * @param {boolean} isClosed Is the survey still running?
      * @constructor
      */
-    constructor(title, surveyAnswers, isClosed) {
-        this.#id = id;
+    constructor(title, surveyAnswers) {
         this.#title = title;
         this.#answers = surveyAnswers;
-        this.#isClosed = isClosed;
     }
 
     //</editor-fold>

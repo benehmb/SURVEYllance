@@ -23,7 +23,7 @@ namespace SURVEYllance.Resources
         /// <summary>
         /// Possible answers
         /// </summary>
-        private List<SurveyAnswer> _answers;
+        private IReadOnlyList<SurveyAnswer> _answers;
 
         /// <summary>
         /// A survey can be closed, so the results will be displayed to anyone and it is not possible to vote anymore
@@ -53,9 +53,9 @@ namespace SURVEYllance.Resources
         /// Getter of <see cref="_answers"/>
         /// Answers can only be set on construction
         /// </summary>
-        public ReadOnlyCollection<SurveyAnswer> Answers
+        public IReadOnlyList<SurveyAnswer> Answers
         {
-            get => _answers.AsReadOnly();
+            get => _answers;
         }
         
         /// <summary>
@@ -83,7 +83,7 @@ namespace SURVEYllance.Resources
         /// </summary>
         /// <param name="title">Title of the survey. Usually a question</param>
         /// <param name="answers">Possible answers for this survey</param>
-        public Survey(string title, List<SurveyAnswer> answers)
+        public Survey(string title, IReadOnlyList<SurveyAnswer> answers)
         {
             _id = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
             _title = title;

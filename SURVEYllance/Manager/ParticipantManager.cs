@@ -35,10 +35,10 @@ namespace SURVEYllance.Manager
         /// Vote for a answer and get Survey with result
         /// </summary>
         /// <param name="connectionId">Connection-ID of the caller (used to determinate room and check if already voted)</param>
-        /// <param name="survey">The <see cref="Survey"/>-Object to vote on</param>
-        /// <param name="surveyAnswer">The <see cref="SurveyAnswer"/>-Object to vote for</param>
+        /// <param name="surveyId">ID of the <see cref="Survey"/>-Object to vote on</param>
+        /// <param name="answerId">ID of the <see cref="SurveyAnswer"/>-Object to vote for</param>
         /// <returns>The survey with answers visible</returns>
-        public Survey Vote(string connectionId, string surveyId, string answeId)
+        public Survey Vote(string connectionId, string surveyId, string answerId)
         {
             // Get room
             var room = GetRoomByConId(connectionId);
@@ -49,7 +49,7 @@ namespace SURVEYllance.Manager
             Survey roomSurvey = room.Surveys.FirstOrDefault(s => s.Id == surveyId);
             
             //Vote for the answer
-            roomSurvey?.VoteForAnswer(answeId);
+            roomSurvey?.VoteForAnswer(answerId);
             
             //TODO: Add listener for new answers
 
@@ -122,7 +122,7 @@ namespace SURVEYllance.Manager
         /// Add listener for:
         ///  - Upcoming surveys <see cref="IParticipantHub.OnNewSurvey"/>
         ///  - Deletion of a survey <see cref="IParticipantHub.OnSurveyRemove"/>
-        ///  - Voting <see cref="IParticipantHub.OnNewSurveyResults"/>
+        ///  - Voting <see cref="IParticipantHub.OnNewSurveyResult"/>
         /// Send the current questions to the participant
         /// Will be called by the <see cref="ParticipantHub"/>
         /// </summary>
@@ -141,19 +141,19 @@ namespace SURVEYllance.Manager
             // TODO: Remove answers from survey
             room.OnNewSurvey += survey =>
             {
-                _participantHubContext.Clients.Client(joinId).SendAsync("OnNewSurvey", survey);
+                _participantHubContext.Clients.Client(connectionId).SendAsync("OnNewSurvey", survey);
                 
                 // Add Listener for Close-Event
                 survey.OnCloseSurvey += () =>
                 {
-                    _participantHubContext.Clients.Client(joinId).SendAsync("OnSurveyClose", survey);
+                    _participantHubContext.Clients.Client(connectionId).SendAsync("OnSurveyClose", survey);
                 };
             };
             
             // Add listener for Delete-Survey-Event
             room.OnSurveyRemove += survey =>
             {
-                _participantHubContext.Clients.Client(joinId).SendAsync("OnSurveyRemove", survey);
+                _participantHubContext.Clients.Client(connectionId).SendAsync("OnSurveyRemove", survey);
             };
             
 #if DEBUG
