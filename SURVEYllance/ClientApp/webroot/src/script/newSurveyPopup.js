@@ -30,7 +30,7 @@ var observeDOM = (function(){
 
 // Get Survey-Form
 /**
- *
+ * Form element for new surveys
  * @type {HTMLFormElement}
  */
 const surveyForm = document.getElementById("surveyForm");
@@ -153,7 +153,7 @@ window.onclick = function(event) {
 //Take over form submit event.
 surveyForm.addEventListener("submit", function (event) {
     event.preventDefault();
-    //chech if all answers are filled
+    //check if all answers are filled
     if(surveyForm.checkValidity())
         //submit form if all answers are filled
         sendData();

@@ -73,10 +73,10 @@
                     </form>
                 </div>
                 <div class="card-action">
-                    <button type="submit" onclick="askQuestionSubmit()" class="waves-effect waves-light btn white-text">
+                    <button type="submit" onclick="submitQuestionForm()" class="waves-effect waves-light btn white-text">
                         Ask Question
                     </button>
-                    <button onclick="document.getElementById('newDialog').style.display = 'none'" class="waves-effect waves-light btn white-text red">
+                    <button onclick="closeQuestionForm()" class="waves-effect waves-light btn white-text red">
                         Cancel
                     </button>
                 </div>
@@ -156,151 +156,9 @@
 <script src="src/sharedObjects/SurveyDOM.js" type="text/javascript"></script>
 <script src="src/sharedObjects/SurveyDOMVotable.js" type="text/javascript"></script>
 <script src="src/sharedObjects/Question.js" type="text/javascript"></script>
+<script src="src/script/newQuestionPopup.js" type="text/javascript"></script>
 <script src="src/script/ParticipantWebsocket.js" type="text/javascript"></script>
 <script type="text/javascript">
-
-    function askQuestionSubmit(){
-        let questionDOMElem = document.getElementById('question');
-        let question = new Question(questionDOMElem.value)
-        console.log(JSON.stringify(question));
-        AskQuestion(question);
-    }
-
-    /**
-     * Delete given element from card action
-     * @param elem card Action delete button
-     */
-    function removeElement(elem) {
-        //TODO: Add some fancy animation
-        // get card from action
-        let card = elem.parentNode.parentNode.parentNode;
-        card.remove();
-    }
-
-    //TODO Use running
-    /**
-     * Parse a {@see Survey}-Object into a {@see HTMLElement}
-     * Example-Usage: {@code document.getElementById('survey-container').appendChild(createSurvey(<surveyObject>));}
-     * @param {Survey} survey the survey to be parsed as a DOM-Object
-     * @returns {HTMLDivElement} The element to be displayed
-     */
-    function createSurvey(survey){
-
-        //<editor-fold desc="Create card">
-        let surveyRow = document.createElement('div');
-        surveyRow.classList.add('row', 'survey');
-
-        let surveyCard = document.createElement('div');
-        surveyCard.classList.add('card');
-        surveyRow.appendChild(surveyCard);
-
-        let surveyCardContent = document.createElement('div');
-        surveyCardContent.classList.add('card-content');
-        surveyCard.appendChild(surveyCardContent);
-        //</editor-fold>
-
-        //<editor-fold desc="Create card title">
-        let surveyCardTitle = document.createElement('div');
-        surveyCardTitle.classList.add('card-title');
-        surveyCardContent.appendChild(surveyCardTitle);
-
-        let surveyCardTitleWrapper = document.createElement('div');
-        surveyCardTitleWrapper.classList.add('valign-wrapper');
-        surveyCardTitle.appendChild(surveyCardTitleWrapper);
-
-        let surveyCardTitleIcon = document.createElement('i');
-        surveyCardTitleIcon.classList.add('material-icons');
-        surveyCardTitleIcon.innerHTML = 'help_outline';
-        surveyCardTitleWrapper.appendChild(surveyCardTitleIcon);
-
-        let surveyCardTitleText = document.createElement('p');
-        surveyCardTitleText.innerHTML = survey.title;
-        surveyCardTitleWrapper.appendChild(surveyCardTitleText);
-        //</editor-fold>
-
-        //<editor-fold desc="Create Form element">
-        let surveyForm = document.createElement('form');
-        surveyForm.classList.add('row');
-        surveyForm.action = "#" //TODO: Add Action
-
-        surveyCardContent.appendChild(surveyForm);
-
-
-        survey.answers.forEach((surveyAnswer) =>{
-            let surveyAnswerRow = document.createElement('p');
-            surveyForm.appendChild(surveyAnswerRow);
-
-            let surveyAnswerLabel = document.createElement('label');
-            surveyAnswerRow.appendChild(surveyAnswerLabel);
-
-            let surveyAnswerInput = document.createElement('input');
-            surveyAnswerInput.classList.add('with-gap');
-            surveyAnswerInput.name = 'group';
-            surveyAnswerInput.type = 'radio';
-            surveyAnswerLabel.appendChild(surveyAnswerInput);
-
-            let surveyAnswerSpan = document.createElement('span');
-            surveyAnswerSpan.classList.add('black-text');
-            surveyAnswerSpan.innerHTML = surveyAnswer.text;
-            surveyAnswerLabel.appendChild(surveyAnswerSpan);
-        });
-        //</editor-fold>
-
-        //<editor-fold desc="Create CardActions">
-        let surveyActions = document.createElement('div');
-        surveyActions.classList.add('card-action');
-        surveyCard.appendChild(surveyActions);
-
-        let surveyActionSubmit = document.createElement('a');
-        surveyActionSubmit.innerHTML = 'Submit survey';
-        surveyActions.appendChild(surveyActionSubmit);
-
-        let surveyActionDismiss = document.createElement('a');
-        surveyActionDismiss.setAttribute('onclick', 'removeElement(this)');
-        surveyActionDismiss.classList.add('red-text');
-        surveyActionDismiss.innerHTML = 'Dismiss';
-        surveyActions.appendChild(surveyActionDismiss);
-        //</editor-fold>
-
-        return surveyRow;
-    }
-
-
-    function createDemoSurvey(){
-        const randomNumber = () => {
-            return Math.floor(Math.random() * 100);
-        }
-        let someAnswers = [];
-        let someSurvey;
-        switch (Math.floor((Math.random() *3) +1)){
-            case 1:
-                someAnswers.push(new SurveyAnswer('... give you up', randomNumber()));
-                someAnswers.push(new SurveyAnswer('... let you down', randomNumber()));
-                someAnswers.push(new SurveyAnswer('...  run around', randomNumber()));
-
-                someSurvey = new Survey('He will never...', someAnswers);
-                break;
-            case 2:
-                someAnswers.push(new SurveyAnswer('... can\'t', randomNumber()));
-                someAnswers.push(new SurveyAnswer('... scan', randomNumber()));
-                someAnswers.push(new SurveyAnswer('...  can', randomNumber()));
-
-                someSurvey = new Survey('Yes we...', someAnswers);
-                break;
-            case 3:
-                someAnswers.push(new SurveyAnswer('... Dream', randomNumber()));
-                someAnswers.push(new SurveyAnswer('... Steam', randomNumber()));
-                someAnswers.push(new SurveyAnswer('...  Stream', randomNumber()));
-
-                someSurvey = new Survey('I have a...', someAnswers);
-                break;
-        }
-
-        document.getElementById('surveys').appendChild(createSurvey(someSurvey));
-    }
-
-    //createDemoSurvey();
-
 </script>
 </body>
 </html>
