@@ -66,7 +66,7 @@ class SurveyDOMVotable extends Survey {
     }
 
     DismissSurvey() {
-        Dismiss(this.Id);
+        Dismiss(this.id);
     }
 
     //</editor-fold>

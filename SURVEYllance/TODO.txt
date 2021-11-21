@@ -25,6 +25,7 @@ Frontend:
     - If you leave/destroy a room !!on purpose!!, the client should call `sessionStorage.clear();`
     - USE IMPORT IN JS: https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Statements/import
         - Use mjs instead of js? https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
+    - Fix HTML injections
 
 backend:
     - Room: Throw error on most return -Statements?

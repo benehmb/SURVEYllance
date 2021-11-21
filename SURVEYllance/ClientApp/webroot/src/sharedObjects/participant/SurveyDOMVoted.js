@@ -2,7 +2,7 @@
  * Survey-Object with reference to {@see HTMLElement}
  * @property {HTMLElement} domObject - reference to {@see HTMLElement}
  */
-class SurveyDOM extends Survey {
+class SurveyDOMVoted extends Survey {
 
     //<editor-fold desc="Private properties">
 
@@ -97,7 +97,6 @@ class SurveyDOM extends Survey {
      */
     RemoveSurvey() {
         this.#domObject.remove();
-        RemoveSurvey(this.Id);
     }
 
     /**
@@ -204,7 +203,7 @@ class SurveyDOM extends Survey {
     /**
      * Parse a {@see Survey}-Object into a {@see HTMLElement}
      * Example-Usage: {@code document.getElementById('survey-container').appendChild(createSurvey(<surveyObject>));}
-     * @param {SurveyDOM} survey the survey to be parsed as a DOM-Object
+     * @param {SurveyDOMVoted} survey the survey to be parsed as a DOM-Object
      * @returns {HTMLDivElement} The element to be displayed
      */
     #createSurvey(survey) {
@@ -275,13 +274,6 @@ class SurveyDOM extends Survey {
         let surveyActions = document.createElement('div');
         surveyActions.classList.add('card-action');
         surveyCard.appendChild(surveyActions);
-
-        let surveyActionClose = document.createElement('a');
-        surveyActionClose.innerHTML = 'Close survey';
-        surveyActionClose.onclick = () => {
-            this.CloseSurvey();
-        };
-        surveyActions.appendChild(surveyActionClose);
 
         let surveyActionRemove = document.createElement('a');
         surveyActionRemove.innerHTML = 'Remove survey';
