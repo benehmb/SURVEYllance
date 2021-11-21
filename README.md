@@ -97,3 +97,10 @@ What is stored in the session-storage and what does it mean
 Thanks to all the people who have contributed, which is at the Moment:
 
 - **Simon Kibler:** Simon made the logo and icon for this project!
+
+## Special Thanks
+
+The people listed here helped me make this project possible, most times even without knowing it.
+
+- [Okta Developer](https://github.com/oktadev) with their step by step guide for WebSockets: [C# WebSockets Tutorial: Build a Multiplayer Game | Okta Developer](https://developer.okta.com/blog/2019/11/21/csharp-websockets-tutorial)
+- [chris-je (Chris)](https://github.com/chris-je) in general, because whenever I had a problem, I came to him and he listened and tried to help.
