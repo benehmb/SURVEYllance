@@ -138,7 +138,7 @@ class SurveyDOMVoted extends Survey {
 
             let surveyAnswerNameText = document.createElement('p');
             surveyAnswerNameText.classList.add('truncate');
-            surveyAnswerNameText.innerHTML = surveyAnswer.text;
+            surveyAnswerNameText.innerHTML = surveyAnswer.text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
             surveyAnswerNameCol.appendChild(surveyAnswerNameText);
 
             let surveyAnswerProgressCol = document.createElement('div');
@@ -190,7 +190,7 @@ class SurveyDOMVoted extends Survey {
             surveyAnswerProgressCol.appendChild(surveyAnswerProgress);
 
             let surveyExtendedAnswerText = document.createElement('p');
-            surveyExtendedAnswerText.innerHTML = (index + 1) + ': ' + surveyAnswer.text;
+            surveyExtendedAnswerText.innerHTML = (index + 1) + ': ' + surveyAnswer.text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
             surveyExtendedAnswers.appendChild(surveyExtendedAnswerText);
         });
@@ -240,7 +240,7 @@ class SurveyDOMVoted extends Survey {
         surveyCardTitleWrapper.appendChild(surveyCardTitleIcon);
 
         let surveyCardTitleText = document.createElement('p');
-        surveyCardTitleText.innerHTML = survey.title;
+        surveyCardTitleText.innerHTML = survey.title.replace(/</g, "&lt;").replace(/>/g, "&gt;");
         surveyCardTitleWrapper.appendChild(surveyCardTitleText);
         //</editor-fold>
 
