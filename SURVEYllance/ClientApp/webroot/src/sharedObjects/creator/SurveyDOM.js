@@ -19,6 +19,18 @@ class SurveyDOM extends Survey {
     #surveyStatsExtendedDiv;
 
     /**
+     * Reference to SurveyCardTitle in DOM
+     * @type {HTMLElement}
+     */
+    #surveyCardTitleText;
+
+    /**
+     * Reference to SurveyActionClose in DOM
+     * @type {HTMLElement}
+     */
+    #surveyActionClose;
+
+    /**
      * Number of votes total
      * @type {number}
      */
@@ -32,6 +44,7 @@ class SurveyDOM extends Survey {
     //</editor-fold>
 
     //<editor-fold desc="Getter">
+
 
     /**
      * Getter for {@see #domObject}
@@ -105,7 +118,9 @@ class SurveyDOM extends Survey {
      */
     CloseSurvey() {
         CloseSurvey(this.id);
-        //TODO: Do something to display that the survey is closed
+        this.#surveyCardTitleText.classList.remove("green-text");
+        this.#surveyCardTitleText .innerHTML = this.title.replace(/</g, "&lt;").replace(/>/g, "&gt;") + "<i>(closed)</i>";
+        this.#surveyActionClose.remove();
     }
 
     /**
@@ -191,7 +206,7 @@ class SurveyDOM extends Survey {
             surveyAnswerProgressCol.appendChild(surveyAnswerProgress);
 
             let surveyExtendedAnswerText = document.createElement('p');
-            surveyExtendedAnswerText.innerHTML = (index + 1) + ': ' + surveyAnswer.text.replace(/</g, "&lt;").replace(/>/g, "&gt;");;;
+            surveyExtendedAnswerText.innerHTML = (index + 1) + ': ' + surveyAnswer.text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
             surveyExtendedAnswers.appendChild(surveyExtendedAnswerText);
         });
@@ -240,9 +255,10 @@ class SurveyDOM extends Survey {
         surveyCardTitleIcon.innerHTML = 'help_outline';
         surveyCardTitleWrapper.appendChild(surveyCardTitleIcon);
 
-        let surveyCardTitleText = document.createElement('p');
-        surveyCardTitleText.innerHTML = survey.title.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        surveyCardTitleWrapper.appendChild(surveyCardTitleText);
+        this.#surveyCardTitleText = document.createElement('p');
+        this.#surveyCardTitleText.classList.add('green-text');
+        this.#surveyCardTitleText .innerHTML = survey.title.replace(/</g, "&lt;").replace(/>/g, "&gt;") + "<i>(running)</i>";
+        surveyCardTitleWrapper.appendChild(this.#surveyCardTitleText);
         //</editor-fold>
 
         //<editor-fold desc="Create SurveyStatsNormal element">
@@ -276,12 +292,12 @@ class SurveyDOM extends Survey {
         surveyActions.classList.add('card-action');
         surveyCard.appendChild(surveyActions);
 
-        let surveyActionClose = document.createElement('a');
-        surveyActionClose.innerHTML = 'Close survey';
-        surveyActionClose.onclick = () => {
+        this.#surveyActionClose = document.createElement('a');
+        this.#surveyActionClose.innerHTML = 'Close survey';
+        this.#surveyActionClose.onclick = () => {
             this.CloseSurvey();
         };
-        surveyActions.appendChild(surveyActionClose);
+        surveyActions.appendChild(this.#surveyActionClose);
 
         let surveyActionRemove = document.createElement('a');
         surveyActionRemove.innerHTML = 'Remove survey';

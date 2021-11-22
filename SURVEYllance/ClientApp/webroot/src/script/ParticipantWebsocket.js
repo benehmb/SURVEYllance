@@ -70,9 +70,15 @@ connection.on("OnNewSurveyResult", (surveyId, answer) => {
  * @param {Survey} survey The survey to display
  */
 connection.on("OnNewSurvey", (survey) => {
-    let surveyDomVotable = new SurveyDOMVotable(survey);
-    surveys.push(surveyDomVotable);
-    surveyContainer.appendChild(surveyDomVotable.domObject);
+    let domSurvey;
+        if (survey.isClosed) {
+        domSurvey = new SurveyDOMVoted(survey);
+        domSurvey.CloseSurvey();
+    } else {
+        domSurvey = new SurveyDOMVotable(survey);
+    }
+    surveys.push(domSurvey);
+    surveyContainer.appendChild(domSurvey.domObject);
 });
 
 /**
@@ -86,6 +92,7 @@ connection.on("OnSurveyClose", (surveyId) => {
 
     //Replace with new one
     const surveyDOMVoted = new SurveyDOMVoted(survey);
+    surveyDOMVoted.CloseSurvey();
     surveys.splice(surveys.indexOf(survey), 1);
     surveys.push(surveyDOMVoted)
     surveyContainer.appendChild(surveyDOMVoted.domObject);
