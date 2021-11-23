@@ -51,7 +51,7 @@ namespace SURVEYllance.Manager
             //Add listener if the number of votes changes
             survey.OnVotesChange += (pSurvey, pAnswer) =>
             {
-                _creatorHubContext.Clients.Client(connectionId).SendAsync("OnNewSurveyResult", pSurvey, pAnswer);
+                _creatorHubContext.Clients.Client(connectionId).SendAsync("OnNewSurveyResult", pSurvey.Id, pAnswer);
             };
         }
 

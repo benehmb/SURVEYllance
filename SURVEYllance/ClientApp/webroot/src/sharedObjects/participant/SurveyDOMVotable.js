@@ -66,7 +66,7 @@ class SurveyDOMVotable extends Survey {
     }
 
     DismissSurvey() {
-        Dismiss(this.Id);
+        Dismiss(this.id);
     }
 
     //</editor-fold>
@@ -108,7 +108,7 @@ class SurveyDOMVotable extends Survey {
         surveyCardTitleWrapper.appendChild(surveyCardTitleIcon);
 
         let surveyCardTitleText = document.createElement('p');
-        surveyCardTitleText.innerHTML = survey.title;
+        surveyCardTitleText.innerHTML = survey.title.replace(/</g, "&lt;").replace(/>/g, "&gt;");
         surveyCardTitleWrapper.appendChild(surveyCardTitleText);
         //</editor-fold>
 
@@ -135,7 +135,7 @@ class SurveyDOMVotable extends Survey {
 
             let surveyAnswerSpan = document.createElement('span');
             surveyAnswerSpan.classList.add('black-text');
-            surveyAnswerSpan.innerHTML = surveyAnswer.text;
+            surveyAnswerSpan.innerHTML = surveyAnswer.text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
             surveyAnswerLabel.appendChild(surveyAnswerSpan);
         });
         //</editor-fold>

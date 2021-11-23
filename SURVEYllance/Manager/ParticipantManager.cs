@@ -153,14 +153,14 @@ namespace SURVEYllance.Manager
                 // Add Listener for Close-Event
                 survey.OnCloseSurvey += () =>
                 {
-                    _participantHubContext.Clients.Client(connectionId).SendAsync("OnSurveyClose", survey);
+                    _participantHubContext.Clients.Client(connectionId).SendAsync("OnSurveyClose", survey.Id);
                 };
             };
             
             // Add listener for Delete-Survey-Event
             room.OnSurveyRemove += survey =>
             {
-                _participantHubContext.Clients.Client(connectionId).SendAsync("OnSurveyRemove", survey);
+                _participantHubContext.Clients.Client(connectionId).SendAsync("OnSurveyRemove", survey.Id);
             };
             
 #if DEBUG

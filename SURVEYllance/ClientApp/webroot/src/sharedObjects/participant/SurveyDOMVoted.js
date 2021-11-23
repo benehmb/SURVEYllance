@@ -2,7 +2,7 @@
  * Survey-Object with reference to {@see HTMLElement}
  * @property {HTMLElement} domObject - reference to {@see HTMLElement}
  */
-class SurveyDOM extends Survey {
+class SurveyDOMVoted extends Survey {
 
     //<editor-fold desc="Private properties">
 
@@ -17,6 +17,12 @@ class SurveyDOM extends Survey {
      * @type {HTMLElement}
      */
     #surveyStatsExtendedDiv;
+
+    /**
+     * Reference to SurveyCardTitle in DOM
+     * @type {HTMLElement}
+     */
+    #surveyCardTitleText;
 
     /**
      * Number of votes total
@@ -97,15 +103,14 @@ class SurveyDOM extends Survey {
      */
     RemoveSurvey() {
         this.#domObject.remove();
-        RemoveSurvey(this.Id);
     }
 
     /**
      * Close this survey and notify the server
      */
     CloseSurvey() {
-        CloseSurvey(this.Id);
-        //TODO: Do something to display that the survey is closed
+        this.#surveyCardTitleText.classList.remove("green-text");
+        this.#surveyCardTitleText .innerHTML = this.title.replace(/</g, "&lt;").replace(/>/g, "&gt;") + "<i>(closed)</i>";
     }
 
     /**
@@ -139,7 +144,7 @@ class SurveyDOM extends Survey {
 
             let surveyAnswerNameText = document.createElement('p');
             surveyAnswerNameText.classList.add('truncate');
-            surveyAnswerNameText.innerHTML = surveyAnswer.text;
+            surveyAnswerNameText.innerHTML = surveyAnswer.text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
             surveyAnswerNameCol.appendChild(surveyAnswerNameText);
 
             let surveyAnswerProgressCol = document.createElement('div');
@@ -191,7 +196,7 @@ class SurveyDOM extends Survey {
             surveyAnswerProgressCol.appendChild(surveyAnswerProgress);
 
             let surveyExtendedAnswerText = document.createElement('p');
-            surveyExtendedAnswerText.innerHTML = (index + 1) + ': ' + surveyAnswer.text;
+            surveyExtendedAnswerText.innerHTML = (index + 1) + ': ' + surveyAnswer.text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
             surveyExtendedAnswers.appendChild(surveyExtendedAnswerText);
         });
@@ -204,7 +209,7 @@ class SurveyDOM extends Survey {
     /**
      * Parse a {@see Survey}-Object into a {@see HTMLElement}
      * Example-Usage: {@code document.getElementById('survey-container').appendChild(createSurvey(<surveyObject>));}
-     * @param {SurveyDOM} survey the survey to be parsed as a DOM-Object
+     * @param {SurveyDOMVoted} survey the survey to be parsed as a DOM-Object
      * @returns {HTMLDivElement} The element to be displayed
      */
     #createSurvey(survey) {
@@ -240,9 +245,10 @@ class SurveyDOM extends Survey {
         surveyCardTitleIcon.innerHTML = 'help_outline';
         surveyCardTitleWrapper.appendChild(surveyCardTitleIcon);
 
-        let surveyCardTitleText = document.createElement('p');
-        surveyCardTitleText.innerHTML = survey.title;
-        surveyCardTitleWrapper.appendChild(surveyCardTitleText);
+        this.#surveyCardTitleText = document.createElement('p');
+        this.#surveyCardTitleText.classList.add('green-text');
+        this.#surveyCardTitleText .innerHTML = survey.title.replace(/</g, "&lt;").replace(/>/g, "&gt;") + "<i>(running)</i>";
+        surveyCardTitleWrapper.appendChild(this.#surveyCardTitleText);
         //</editor-fold>
 
         //<editor-fold desc="Create SurveyStatsNormal element">
@@ -275,13 +281,6 @@ class SurveyDOM extends Survey {
         let surveyActions = document.createElement('div');
         surveyActions.classList.add('card-action');
         surveyCard.appendChild(surveyActions);
-
-        let surveyActionClose = document.createElement('a');
-        surveyActionClose.innerHTML = 'Close survey';
-        surveyActionClose.onclick = () => {
-            this.CloseSurvey();
-        };
-        surveyActions.appendChild(surveyActionClose);
 
         let surveyActionRemove = document.createElement('a');
         surveyActionRemove.innerHTML = 'Remove survey';

@@ -36,7 +36,7 @@ class QuestionDOM extends Question{
         questionCard.appendChild(questionCardContent);
 
         let questionCardText = document.createElement('p');
-        questionCardText.innerHTML = question.title;
+        questionCardText.innerHTML = question.title.replace(/</g, "&lt;").replace(/>/g, "&gt;");;;
         questionCardContent.appendChild(questionCardText);
 
         let questionCardAction = document.createElement('div');

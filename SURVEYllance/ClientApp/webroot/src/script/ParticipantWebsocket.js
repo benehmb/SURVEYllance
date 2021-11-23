@@ -55,7 +55,6 @@ const surveys = [];
 //<editor-fold desc="Client">
 
 //<editor-fold desc="Survey">
-//TODO: We need another SurveyDOM-Class, because we won't close or remove a Survey as a participant
 
 /**
  * Will be called by the server when the results of a survey change
@@ -71,9 +70,15 @@ connection.on("OnNewSurveyResult", (surveyId, answer) => {
  * @param {Survey} survey The survey to display
  */
 connection.on("OnNewSurvey", (survey) => {
-    let surveyDomVotable = new SurveyDOMVotable(survey);
-    surveys.push(surveyDomVotable);
-    surveyContainer.appendChild(surveyDomVotable.domObject);
+    let domSurvey;
+        if (survey.isClosed) {
+        domSurvey = new SurveyDOMVoted(survey);
+        domSurvey.CloseSurvey();
+    } else {
+        domSurvey = new SurveyDOMVotable(survey);
+    }
+    surveys.push(domSurvey);
+    surveyContainer.appendChild(domSurvey.domObject);
 });
 
 /**
@@ -86,10 +91,11 @@ connection.on("OnSurveyClose", (surveyId) => {
     survey.RemoveSurvey();
 
     //Replace with new one
-    const surveyDOM = new SurveyDOM(survey);
+    const surveyDOMVoted = new SurveyDOMVoted(survey);
+    surveyDOMVoted.CloseSurvey();
     surveys.splice(surveys.indexOf(survey), 1);
-    surveys.push(surveyDOM)
-    surveyContainer.appendChild(surveyDOM.domObject);
+    surveys.push(surveyDOMVoted)
+    surveyContainer.appendChild(surveyDOMVoted.domObject);
 });
 
 /**
@@ -153,9 +159,9 @@ async function Vote(surveyId, answerId) {
 
         //Replace with new one
         const survey = await connection.invoke("Vote", surveyId, answerId);
-        const surveyDOM = new SurveyDOM(survey);
-        surveys.push(surveyDOM)
-        surveyContainer.appendChild(surveyDOM.domObject);
+        const surveyDOMVoted = new SurveyDOMVoted(survey);
+        surveys.push(surveyDOMVoted)
+        surveyContainer.appendChild(surveyDOMVoted.domObject);
 
     } catch (err) {
         console.error(err);
@@ -176,9 +182,9 @@ async function Dismiss(surveyId) {
 
         //Replace with new one
         const survey = await connection.invoke("Dismiss", surveyId);
-        const surveyDOM = new SurveyDOM(survey);
-        surveys.push(surveyDOM)
-        surveyContainer.appendChild(surveyDOM.domObject);
+        const surveyDOMVoted = new SurveyDOMVoted(survey);
+        surveys.push(surveyDOMVoted)
+        surveyContainer.appendChild(surveyDOMVoted.domObject);
 
     } catch (err) {
         console.error(err);
