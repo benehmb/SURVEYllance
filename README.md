@@ -1,5 +1,7 @@
 # SURVEYllance
 
+[![Docker Image CI](https://github.com/benehmb/SURVEYllance/actions/workflows/docker-image.yml/badge.svg)](https://github.com/benehmb/SURVEYllance/actions/workflows/docker-image.yml)
+
 ## About this project:
 
 This project was created for classrooms, online meetings or any other form of meeting.

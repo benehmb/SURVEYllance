@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+
+  surveyllance:
+    build: .
+    container_name: surveyllance
+    environment:
+      - VIRTUAL_HOST=surveyllance.hackermb.com
+      - LETSENCRYPT_HOST=surveyllance.hackermb.com
+      - LETSENCRYPT_EMAIL=hackermb.00@gmail.com
+    networks:
+      - "proxy"
+    restart: unless-stopped
+
+networks:
+  proxy:
+    external:
+      name: proxy-network
