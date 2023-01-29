@@ -30,7 +30,7 @@ namespace SURVEYllance
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy",
-                    builder => builder.WithOrigins("http://localhost:8080")
+                    builder => builder.WithOrigins("https://nice-beach-062ce5403.2.azurestaticapps.net")
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowCredentials());

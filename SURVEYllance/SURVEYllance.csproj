@@ -16,7 +16,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="ClientApp" />
+      <None Update="ClientApp\**">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>
